@@ -64,6 +64,8 @@ private:
   // Emulation Variables
   bool initialized;
   bool none_opcode;
+  bool interuptEnabled;
+  std::uint8_t interuptPending;
   std::uint32_t cycles;
 
   // General Purpose Registers
@@ -91,7 +93,7 @@ private:
   std::array<OPCODE, INSTR_SIZE> instrtable
 
   // Opcode Functions
-  void opcode_none(); // To catch unimplemented ops
+  void opcode_none();   // To catch unimplemented ops
 
   void opcode_nop();    // 0x00
   void opcode_lxib();   // 0x01
@@ -224,7 +226,136 @@ private:
   void opcode_movam();  // 0x7e
   void opcode_movaa();  // 0x7f
 
-  void opcode_();
+  void opcode_addb();   // 0x80
+  void opcode_addc();   // 0x81
+  void opcode_addd();   // 0x82
+  void opcode_adde();   // 0x83
+  void opcode_addh();   // 0x84
+  void opcode_addl();   // 0x85
+  void opcode_addm();   // 0x86
+  void opcode_adda();   // 0x87
+  void opcode_adcb();   // 0x88
+  void opcode_adcc();   // 0x89
+  void opcode_adcd();   // 0x8a
+  void opcode_adce();   // 0x8b
+  void opcode_adch();   // 0x8c
+  void opcode_adcl();   // 0x8d
+  void opcode_adcm();   // 0x8e
+  void opcode_adca();   // 0x8f
+
+  void opcode_subb();   // 0x90
+  void opcode_subc();   // 0x91
+  void opcode_subd();   // 0x92
+  void opcode_sube();   // 0x93
+  void opcode_subh();   // 0x94
+  void opcode_subl();   // 0x95
+  void opcode_subm();   // 0x96
+  void opcode_suba();   // 0x97
+  void opcode_sbbb();   // 0x98
+  void opcode_sbbc();   // 0x99
+  void opcode_sbbd();   // 0x9a
+  void opcode_sbbe();   // 0x9b
+  void opcode_sbbh();   // 0x9c
+  void opcode_sbbl();   // 0x9d
+  void opcode_sbbm();   // 0x9e
+  void opcode_sbba();   // 0x9f
+
+  void opcode_anab();   // 0xa0
+  void opcode_anac();   // 0xa1
+  void opcode_anad();   // 0xa2
+  void opcode_anae();   // 0xa3
+  void opcode_anah();   // 0xa4
+  void opcode_anal();   // 0xa5
+  void opcode_anam();   // 0xa6
+  void opcode_anaa();   // 0xa7
+  void opcode_xrab();   // 0xa8
+  void opcode_xrac();   // 0xa9
+  void opcode_xrad();   // 0xaa
+  void opcode_xrae();   // 0xab
+  void opcode_xrah();   // 0xac
+  void opcode_xral();   // 0xad
+  void opcode_xram();   // 0xae
+  void opcode_xraa();   // 0xaf
+
+  void opcode_orab();   // 0xb0
+  void opcode_orac();   // 0xb1
+  void opcode_orad();   // 0xb2
+  void opcode_orae();   // 0xb3
+  void opcode_orah();   // 0xb4
+  void opcode_oral();   // 0xb5
+  void opcode_oram();   // 0xb6
+  void opcode_oraa();   // 0xb7
+  void opcode_cmpb();   // 0xb8
+  void opcode_cmpc();   // 0xb9
+  void opcode_cmpd();   // 0xba
+  void opcode_cmpe();   // 0xbb
+  void opcode_cmph();   // 0xbc
+  void opcode_cmpl();   // 0xbd
+  void opcode_cmpm();   // 0xbe
+  void opcode_cmpa();   // 0xbf
+
+  void opcode_rnz();    // 0xc0
+  void opcode_popb();   // 0xc1
+  void opcode_jnz();    // 0xc2
+  void opcode_jmp();    // 0xc3
+  void opcode_cnz();    // 0xc4
+  void opcode_pushb();  // 0xc5
+  void opcode_adid();   // 0xc6
+  void opcode_rst0();   // 0xc7
+  void opcode_rz();     // 0xc8
+  void opcode_ret();    // 0xc9
+  void opcode_jz();     // 0xca
+  void opcode_cz();     // 0xcc
+  void opcode_call();   // 0xcd
+  void opcode_acid();   // 0xce
+  void opcode_rst1();   // 0xcf
+
+  void opcode_rnc();    // 0xd0
+  void opcode_popd();   // 0xd1
+  void opcode_jnc();    // 0xd2
+  void opcode_outd();   // 0xd3
+  void opcode_cnc();    // 0xd4
+  void opcode_pushd();  // 0xd5
+  void opcode_suid();   // 0xd6
+  void opcode_rst2();   // 0xd7
+  void opcode_rc();     // 0xd8
+  void opcode_jc();     // 0xda
+  void opcode_ind();    // 0xdb
+  void opcode_cc();     // 0xdc
+  void opcode_sbid();   // 0xde
+  void opcode_rst3();   // 0xdf
+
+  void opcode_rpo();    // 0xe0
+  void opcode_poph();   // 0xe1
+  void opcode_jpo();    // 0xe2
+  void opcode_xthl();   // 0xe3
+  void opcode_cpo();    // 0xe4
+  void opcode_pushh();  // 0xe5
+  void opcode_anid();   // 0xe6
+  void opcode_rst4();   // 0xe7
+  void opcode_rpe();    // 0xe8
+  void opcode_pchl();   // 0xe9
+  void opcode_jpe();    // 0xea
+  void opcode_xchg();   // 0xeb
+  void opcode_cpe();    // 0xec
+  void opcode_xrid();   // 0xee
+  void opcode_rst5();   // 0xef
+
+  void opcode_rp();     // 0xf0
+  void opcode_poppsw(); // 0xf1
+  void opcode_jp();     // 0xf2
+  void opcode_di();     // 0xf3
+  void opcode_cp();     // 0xf4
+  void opcode_pushpsw();// 0xf5
+  void opcode_orid();   // 0xf6
+  void opcode_rst6();   // 0xf7
+  void opcode_rm();     // 0xf8
+  void opcode_sphl();   // 0xf9
+  void opcode_jm();     // 0xfa
+  void opcode_ei();     // 0xfb
+  void opcode_cm();     // 0xfc
+  void opcode_cpid();   // 0xfe
+  void opcode_rst7();   // 0xff
 
   // CPU Functions
   void stack_push(std::uint16_t value);
@@ -240,7 +371,7 @@ public:
   i8080();
 
   // User Functions
-  void Open();
+  void Open(const char *path);
   void Run(std::uint32_t num_cycles);
   void Reset();
   void Debug();
