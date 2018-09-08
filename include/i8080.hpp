@@ -44,11 +44,11 @@ static const std::uint8_t FLAG_CONST = 0x02;
 static const std::uint8_t FLAG_CARRY = 0x01;
 
 // Flag Functions
-inline bool IF_SIGN(std::uint8_t value) { return value & FLAG_SIGN; }
-inline bool IF_ZERO(std::uint8_t value) { return value & FLAG_ZERO; }
-inline bool IF_AUX(std::uint8_t value) { return value & FLAG_AUX; }
-inline bool IF_PARITY(std::uint8_t value) { return value & FLAG_PARITY; }
-inline bool IF_CARRY(std::uint8_t value) { return value & FLAG_CARRY; }
+inline bool IS_SIGN(std::uint8_t value) { return value & FLAG_SIGN; }
+inline bool IS_ZERO(std::uint8_t value) { return value & FLAG_ZERO; }
+inline bool IS_AUX(std::uint8_t value) { return value & FLAG_AUX; }
+inline bool IS_PARITY(std::uint8_t value) { return value & FLAG_PARITY; }
+inline bool IS_CARRY(std::uint8_t value) { return value & FLAG_CARRY; }
 
 inline bool SET_SIGN(bool value, std::uint8_t *flags) { value ? (*flags |= FLAG_SIGN) : (*flags &= (~FLAG_SIGN)); }
 inline bool SET_ZERO(bool value, std::uint8_t *flags) { value ? (*flags |= FLAG_ZERO) : (*flags &= (~FLAG_ZERO)); }
@@ -64,6 +64,7 @@ private:
   // Emulation Variables
   bool initialized;
   bool none_opcode;
+  bool halt;
   bool interuptEnabled;
   std::uint8_t interuptPending;
   std::uint32_t cycles;
@@ -73,6 +74,7 @@ private:
   std::uint8_t b;
   std::uint8_t c;
   std::uint8_t d;
+  std::uint8_t e;
   std::uint8_t h;
   std::uint8_t l;
 
@@ -358,6 +360,7 @@ private:
   void opcode_rst7();   // 0xff
 
   // CPU Functions
+  const bool& getParity(uint16_t value);
   void stack_push(std::uint16_t value);
   std::uint16_t stack_pop();
 

@@ -16,6 +16,19 @@ DEALINGS IN THE SOFTWARE.
 
 #include <i8080>
 
+const bool& i8080::getParity(uint16_t value) {
+  // Iterate through the bit to establish if it has an even or odd parity of 1's
+  uint8_t count = 0;
+  for(int i = 0; i < 16; i++) {
+    if(value & 0x01)
+      count++
+    value >>= 1;
+  }
+
+  // Parity is the most significant bit of count; 0 for odd 1 for even parity.
+  return !(count & 0x01);
+}
+
 void i8080::stack_push(std::uint16_t value) {
     // Do nothing
 }
@@ -320,7 +333,7 @@ void i8080::Open(const char *path) {
 }
 
 void i8080::Run(std::uint32_t num_cycles) {
-  if(!initialized)
+  if(!initialized || halt)
     return;
 
   // Do nothing
@@ -338,12 +351,14 @@ void i8080::Reset() {
   // Reset program counter, stack pointer and status register
   pc = 0;
   sp = 0xFFFF;
-  flags = 0;
+  flags = 0x02;
 
   // Fill the memory
   MEMORY.fill(0);
 
   // Reset emulation variables
+  none_opcode = false;
+  halt = false;
   interuptEnabled = false;
   interuptPending = 0;
   cycles = 0;

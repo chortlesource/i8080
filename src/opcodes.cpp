@@ -17,12 +17,12 @@ DEALINGS IN THE SOFTWARE.
 #include <i8080>
 
 void i8080::opcode_none(){
-    // Do Nothing
+    none_opcode = true;
 }   // To catch unimplemented ops
 
 
 void i8080::opcode_nop(){
-    // Do Nothing
+    return;
 }    // 0x00
 
 void i8080::opcode_lxib(){
@@ -34,15 +34,28 @@ void i8080::opcode_staxb(){
 }  // 0x02
 
 void i8080::opcode_inxb(){
-    // Do Nothing
+  c++;
+  if(!c) b++;
 }   // 0x03
 
 void i8080::opcode_inrb(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = b + 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  b = value;
 }   // 0x04
 
 void i8080::opcode_dcrb(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = b - 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  b = value;
 }   // 0x05
 
 void i8080::opcode_mvib(){
@@ -62,15 +75,28 @@ void i8080::opcode_ldaxb(){
 }  // 0x0a
 
 void i8080::opcode_dcxb(){
-    // Do Nothing
+  c--;
+  if(!c) b--;
 }   // 0x0b
 
 void i8080::opcode_inrc(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = c + 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  c = value;
 }   // 0x0c
 
 void i8080::opcode_dcrc(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = c - 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  c = value;
 }   // 0x0d
 
 void i8080::opcode_mvic(){
@@ -91,15 +117,28 @@ void i8080::opcode_staxd(){
 }  // 0x12
 
 void i8080::opcode_inxd(){
-    // Do Nothing
+  e++;
+  if(!e) d++;
 }   // 0x13
 
 void i8080::opcode_inrd(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = d + 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  d = value;
 }   // 0x14
 
 void i8080::opcode_dcrd(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = d - 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  d = value;
 }   // 0x15
 
 void i8080::opcode_mvid(){
@@ -119,15 +158,28 @@ void i8080::opcode_ldaxd(){
 }  // 0x1a
 
 void i8080::opcode_dcxd(){
-    // Do Nothing
+  e--;
+  if(!e) d--;
 }   // 0x1b
 
 void i8080::opcode_inre(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = e + 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  e = value;
 }   // 0x1c
 
 void i8080::opcode_dcre(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = e - 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  e = value;
 }   // 0x1d
 
 void i8080::opcode_mvie(){
@@ -152,15 +204,28 @@ void i8080::opcode_shld(){
 }   // 0x22
 
 void i8080::opcode_inxh(){
-    // Do Nothing
+  l++;
+  if(!l) h++;
 }   // 0x23
 
 void i8080::opcode_inrh(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = h + 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  h = value;
 }   // 0x24
 
 void i8080::opcode_dcrh(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = h - 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  h = value;
 }   // 0x25
 
 void i8080::opcode_mvih(){
@@ -184,11 +249,23 @@ void i8080::opcode_dclh(){
 }   // 0x2b
 
 void i8080::opcode_inrl(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = l + 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  l = value;
 }   // 0x2c
 
 void i8080::opcode_dcrl(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = l - 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  l = value;
 }   // 0x2d
 
 void i8080::opcode_mvil(){
@@ -217,11 +294,33 @@ void i8080::opcode_inxsp(){
 }  // 0x33
 
 void i8080::opcode_inrm(){
-    // Do Nothing
+  // Obtain the value from memory address hl
+  uint8_t mem = MEMORY_READ((h << 8) + l);
+
+  // Use uint16_t to capture the carry
+  std::uint16_t value = mem + 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+
+  // Write memory back to address
+  MEMORY_WRITE((h << 8) + l, value & 0xFF);
 }   // 0x34
 
 void i8080::opcode_dcrm(){
-    // Do Nothing
+  // Obtain the value from memory address hl
+  uint8_t mem = MEMORY_READ((h << 8) + l);
+
+  // Use uint16_t to capture the carry
+  std::uint16_t value = mem - 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+
+  // Write memory back to address
+  MEMORY_WRITE((h << 8) + l, value & 0xFF);
 }   // 0x35
 
 void i8080::opcode_mvim(){
@@ -241,15 +340,27 @@ void i8080::opcode_lda(){
 }    // 0x3a
 
 void i8080::opcode_dcxsp(){
-    // Do Nothing
+  sp--;
 }  // 0x3b
 
 void i8080::opcode_inra(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x3c
 
 void i8080::opcode_dcra(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - 1;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x3d
 
 void i8080::opcode_mvia(){
@@ -262,392 +373,628 @@ void i8080::opcode_cmc(){
 
 
 void i8080::opcode_movbb(){
-    // Do Nothing
+  return;
 }  // 0x40
 
 void i8080::opcode_movbc(){
-    // Do Nothing
+  b = c;
 }  // 0x41
 
 void i8080::opcode_movbd(){
-    // Do Nothing
+  b = d;
 }  // 0x42
 
 void i8080::opcode_movbe(){
-    // Do Nothing
+  b = e;
 }  // 0x43
 
 void i8080::opcode_movbh(){
-    // Do Nothing
+  b = h;
 }  // 0x44
 
 void i8080::opcode_movbl(){
-    // Do Nothing
+  b = l;
 }  // 0x45
 
 void i8080::opcode_movbm(){
-    // Do Nothing
+  b = MEMORY_READ((h << 8) + l);
 }  // 0x46
 
 void i8080::opcode_movba(){
-    // Do Nothing
+  b = a;
 }  // 0x47
 
 void i8080::opcode_movcb(){
-    // Do Nothing
+  c = b;
 }  // 0x48
 
 void i8080::opcode_movcc(){
-    // Do Nothing
+  return;
 }  // 0x49
 
 void i8080::opcode_movcd(){
-    // Do Nothing
+  c = d;
 }  // 0x4a
 
 void i8080::opcode_movce(){
-    // Do Nothing
+  c = e;
 }  // 0x4b
 
 void i8080::opcode_movch(){
-    // Do Nothing
+  c = h;
 }  // 0x4c
 
 void i8080::opcode_movcl(){
-    // Do Nothing
+  c = l;
 }  // 0x4d
 
 void i8080::opcode_movcm(){
-    // Do Nothing
+  c = MEMORY_READ((h << 8) + l);
 }  // 0x4e
 
 void i8080::opcode_movca(){
-    // Do Nothing
+  c = a;
 }  // 0x4f
 
 
 void i8080::opcode_movdb(){
-    // Do Nothing
+  d = b;
 }  // 0x50
 
 void i8080::opcode_movdc(){
-    // Do Nothing
+  d = c;
 }  // 0x51
 
 void i8080::opcode_movdd(){
-    // Do Nothing
+  return;
 }  // 0x52
 
 void i8080::opcode_movde(){
-    // Do Nothing
+  d = e;
 }  // 0x53
 
 void i8080::opcode_movdh(){
-    // Do Nothing
+  d = h;
 }  // 0x54
 
 void i8080::opcode_movdl(){
-    // Do Nothing
+  d = l;
 }  // 0x55
 
 void i8080::opcode_movdm(){
-    // Do Nothing
+  d = MEMORY_READ((h << 8) + l);
 }  // 0x56
 
 void i8080::opcode_movda(){
-    // Do Nothing
+  d = a;
 }  // 0x57
 
 void i8080::opcode_moveb(){
-    // Do Nothing
+  e = b;
 }  // 0x58
 
 void i8080::opcode_movec(){
-    // Do Nothing
+  e = c;
 }  // 0x59
 
 void i8080::opcode_moved(){
-    // Do Nothing
+  e = d;
 }  // 0x5a
 
 void i8080::opcode_movee(){
-    // Do Nothing
+  return;
 }  // 0x5b
 
 void i8080::opcode_moveh(){
-    // Do Nothing
+  e = h;
 }  // 0x5c
 
 void i8080::opcode_movel(){
-    // Do Nothing
+  e = l;
 }  // 0x5d
 
 void i8080::opcode_movem(){
-    // Do Nothing
+  e = MEMORY_READ((h << 8) + l);
 }  // 0x5e
 
 void i8080::opcode_movea(){
-    // Do Nothing
+  e = a;
 }  // 0x5f
 
 
 void i8080::opcode_movhb(){
-    // Do Nothing
+  h = b;
 }  // 0x60
 
 void i8080::opcode_movhc(){
-    // Do Nothing
+  h = c;
 }  // 0x61
 
 void i8080::opcode_movhd(){
-    // Do Nothing
+  h = d;
 }  // 0x62
 
 void i8080::opcode_movhe(){
-    // Do Nothing
+  h = e;
 }  // 0x63
 
 void i8080::opcode_movhh(){
-    // Do Nothing
+  return;
 }  // 0x64
 
 void i8080::opcode_movhl(){
-    // Do Nothing
+  h = l;
 }  // 0x65
 
 void i8080::opcode_movhm(){
-    // Do Nothing
+  h = MEMORY_READ((h << 8) + l);
 }  // 0x66
 
 void i8080::opcode_movha(){
-    // Do Nothing
+  h = a;
 }  // 0x67
 
 void i8080::opcode_movlb(){
-    // Do Nothing
+  l = b;
 }  // 0x68
 
 void i8080::opcode_movlc(){
-    // Do Nothing
+  l = c;
 }  // 0x69
 
 void i8080::opcode_movld(){
-    // Do Nothing
+  l = d;
 }  // 0x6a
 
 void i8080::opcode_movle(){
-    // Do Nothing
+  l = e;
 }  // 0x6b
 
 void i8080::opcode_movlh(){
-    // Do Nothing
+  l = h;
 }  // 0x6c
 
 void i8080::opcode_movll(){
-    // Do Nothing
+  return;
 }  // 0x6d
 
 void i8080::opcode_movlm(){
-    // Do Nothing
+  l = MEMORY_READ((h << 8) + l);
 }  // 0x6e
 
 void i8080::opcode_movla(){
-    // Do Nothing
+  l = a;
 }  // 0x6f
 
 
 void i8080::opcode_movmb(){
-    // Do Nothing
+  MEMORY_WRITE((h << 8) + l, b);
 }  // 0x70
 
 void i8080::opcode_movmc(){
-    // Do Nothing
+  MEMORY_WRITE((h << 8) + l, c);
 }  // 0x71
 
 void i8080::opcode_movmd(){
-    // Do Nothing
+  MEMORY_WRITE((h << 8) + l, d);
 }  // 0x72
 
 void i8080::opcode_movme(){
-    // Do Nothing
+  MEMORY_WRITE((h << 8) + l, e);
 }  // 0x73
 
 void i8080::opcode_movmh(){
-    // Do Nothing
+  MEMORY_WRITE((h << 8) + l, h);
 }  // 0x74
 
 void i8080::opcode_movml(){
-    // Do Nothing
+  MEMORY_WRITE((h << 8) + l, l);
 }  // 0x75
 
 void i8080::opcode_hlt(){
-    // Do Nothing
+  halt = true;
 }    // 0x76
 
 void i8080::opcode_movma(){
-    // Do Nothing
+  MEMORY_WRITE((h << 8) + l, a);
 }  // 0x77
 
 void i8080::opcode_movab(){
-    // Do Nothing
+  a = b;
 }  // 0x78
 
 void i8080::opcode_movac(){
-    // Do Nothing
+  a = c;
 }  // 0x79
 
 void i8080::opcode_movad(){
-    // Do Nothing
+  a = d;
 }  // 0x7a
 
 void i8080::opcode_movae(){
-    // Do Nothing
+  a = e;
 }  // 0x7b
 
 void i8080::opcode_movah(){
-    // Do Nothing
+  a = h;
 }  // 0x7c
 
 void i8080::opcode_moval(){
-    // Do Nothing
+  a = l;
 }  // 0x7d
 
 void i8080::opcode_movam(){
-    // Do Nothing
+  a = MEMORY_READ((h << 8) + l);
 }  // 0x7e
 
 void i8080::opcode_movaa(){
-    // Do Nothing
+  return;
 }  // 0x7f
 
 
 void i8080::opcode_addb(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + b;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x80
 
 void i8080::opcode_addc(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + c;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x81
 
 void i8080::opcode_addd(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + d;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x82
 
 void i8080::opcode_adde(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + e;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x83
 
 void i8080::opcode_addh(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + h;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x84
 
 void i8080::opcode_addl(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + l;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x85
 
 void i8080::opcode_addm(){
-    // Do Nothing
+  // Obtain the value from memory address hl
+  uint8_t mem = MEMORY_READ((h << 8) + l);
+
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + mem;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x86
 
 void i8080::opcode_adda(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + a;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x87
 
 void i8080::opcode_adcb(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + b + IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x88
 
 void i8080::opcode_adcc(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + c + IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x89
 
 void i8080::opcode_adcd(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + d + IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x8a
 
 void i8080::opcode_adce(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + e + IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x8b
 
 void i8080::opcode_adch(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + h + IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x8c
 
 void i8080::opcode_adcl(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + l + IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x8d
 
 void i8080::opcode_adcm(){
-    // Do Nothing
+  // Obtain the value from memory address hl
+  uint8_t mem = MEMORY_READ((h << 8) + l);
+
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + mem + IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x8e
 
 void i8080::opcode_adca(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + a + IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x8f
 
 
 void i8080::opcode_subb(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - b;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x90
 
 void i8080::opcode_subc(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - c;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x91
 
 void i8080::opcode_subd(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - d;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x92
 
 void i8080::opcode_sube(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - e;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x93
 
 void i8080::opcode_subh(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - h;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x94
 
 void i8080::opcode_subl(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - l;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x95
 
 void i8080::opcode_subm(){
-    // Do Nothing
+  // Obtain the value from memory address hl
+  uint8_t mem = MEMORY_READ((h << 8) + l);
+
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - mem;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x96
 
 void i8080::opcode_suba(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - a;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x97
 
 void i8080::opcode_sbbb(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - b - IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x98
 
 void i8080::opcode_sbbc(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - c - IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x99
 
 void i8080::opcode_sbbd(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - d - IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x9a
 
 void i8080::opcode_sbbe(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - e - IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x9b
 
 void i8080::opcode_sbbh(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - h - IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x9c
 
 void i8080::opcode_sbbl(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - l - IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x9d
 
 void i8080::opcode_sbbm(){
-    // Do Nothing
+  // Obtain the value from memory address hl
+  uint8_t mem = MEMORY_READ((h << 8) + l);
+
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - mem - IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x9e
 
 void i8080::opcode_sbba(){
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a - a - IS_CARRY(flags);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0x9f
 
 
@@ -973,7 +1320,7 @@ void i8080::opcode_jp(){
 }     // 0xf2
 
 void i8080::opcode_di(){
-    // Do Nothing
+  interuptEnabled = false;
 }     // 0xf3
 
 void i8080::opcode_cp(){
@@ -1005,7 +1352,7 @@ void i8080::opcode_jm(){
 }     // 0xfa
 
 void i8080::opcode_ei(){
-    // Do Nothing
+  interuptEnabled = true;
 }     // 0xfb
 
 void i8080::opcode_cm(){
