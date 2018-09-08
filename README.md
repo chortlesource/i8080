@@ -16,8 +16,8 @@ immediate, direct and indirect (using HL)
 * Implement Open
 * Implement Run
 x Implement Reset
-* Implement push
-* Implement pop
+x Implement push
+x Implement pop
 * Implement Ops 00 - 0f
 * Implement Ops 10 - 1f
 * Implement Ops 20 - 2f

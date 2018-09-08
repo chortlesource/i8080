@@ -17,11 +17,15 @@ DEALINGS IN THE SOFTWARE.
 #include <i8080>
 
 void i8080::stack_push(std::uint16_t value) {
-    // Do nothing
+    sp -= 2;
+    MEMORY_WRITE(sp, value & 0x00FF);
+    MEMORY_WRITE(sp + 1, (value & 0xFF00) >> 8);
 }
 
 std::uint16_t i8080::stack_pop() {
-    // Do nothing
+    uint16_t value = (MEMORY_READ(sp + 1) << 8) | MEMORY_READ(sp);
+    sp += 2;
+    return value;
 }
 
 void i8080::exec(OPCODE instr) {
