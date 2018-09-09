@@ -18,7 +18,7 @@ immediate, direct and indirect (using HL)
 x Implement Reset
 x Implement push
 x Implement pop
-* Implement Ops 00 - 0f
+x Implement Ops 00 - 0f
 * Implement Ops 10 - 1f
 * Implement Ops 20 - 2f
 * Implement Ops 30 - 3f
