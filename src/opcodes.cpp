@@ -63,7 +63,7 @@ void i8080::opcode_dcrb() {
 }   // 0x05
 
 void i8080::opcode_mvib() {
-  // Read Memory byte2 = b
+  // Read Memory b = MEM[byte2]
   b = MEMORY_READ(pc++);
 }   // 0x06
 
@@ -75,6 +75,7 @@ void i8080::opcode_rlc() {
     SET_CARRY(true, &flags);
     temp |= 0x01;
   }
+  a = temp;
 }    // 0x07
 
 void i8080::opcode_dadb() {
@@ -120,7 +121,7 @@ void i8080::opcode_dcrc() {
 }   // 0x0d
 
 void i8080::opcode_mvic() {
-  // c = MEMORY[byte2]
+  // c = MEM[byte2]
   c = MEMORY_READ(pc++);
 }   // 0x0e
 
@@ -132,18 +133,23 @@ void i8080::opcode_rrc() {
     SET_CARRY(true, &flags);
     temp |= 0x80;
   }
+  a = temp;
 }    // 0x0f
 
 
 void i8080::opcode_lxid() {
-    // Do Nothing
+  // Read Memory; e = byte3, d = byte2
+  e = MEMORY_READ(pc++);
+  d = MEMORY_READ(pc++);
 }   // 0x11
 
 void i8080::opcode_staxd() {
+  // Write a to addr de
   MEMORY_WRITE((d << 8) + e, a);
 }  // 0x12
 
 void i8080::opcode_inxd() {
+  // Incr e; if e == 0 we have carry into high order so incr d;
   e++;
   if(!e) d++;
 }   // 0x13
@@ -169,11 +175,17 @@ void i8080::opcode_dcrd() {
 }   // 0x15
 
 void i8080::opcode_mvid() {
-    // Do Nothing
+  // Read Memory d = MEM[byte2]
+  d = MEMORY_READ(pc++);
 }   // 0x16
 
 void i8080::opcode_ral() {
-    // Do Nothing
+  // Move bits a << 1; set bit 0 as cy && cy as bit 7
+  std::uint8_t temp = a << 1;
+
+  temp |= (flags & FLAG_CARRY);
+  SET_CARRY((flags & (a >> 7)), &flags);
+  a = temp;
 }    // 0x17
 
 void i8080::opcode_dadd() {
@@ -216,24 +228,34 @@ void i8080::opcode_dcre() {
 }   // 0x1d
 
 void i8080::opcode_mvie() {
-    // Do Nothing
+  // Read Memory; e = MEM[byte2]
+  e = MEMORY_READ(pc++);
 }   // 0x1e
 
 void i8080::opcode_rar() {
-    // Do Nothing
+  // Move bits a >> 1; set bit 7 as prev bit 7 && cy as prev bit 0
+  std::uint8_t temp = a >> 1;
+
+  temp |= (a & 0x80);
+  SET_CARRY(a & 0x01, &flags);
+  a = temp;
 }    // 0x1f
 
 
 void i8080::opcode_rim() {
-    // Do Nothing
+    // Do Nothing yet
 }    // 0x20
 
 void i8080::opcode_lxih() {
-    // Do Nothing
+  // Read Memory; l = MEM[byte2] h = MEM[byte3]
+  l = READ_MEMORY(pc++);
+  h = READ_MEMORY(pc++);
 }   // 0x21
 
 void i8080::opcode_shld() {
-    // Do Nothing
+  // Write
+  MEMORY_WRITE(pc++, l);
+  MEMORY_WRITE(pc++, h);
 }   // 0x22
 
 void i8080::opcode_inxh() {
@@ -262,11 +284,23 @@ void i8080::opcode_dcrh() {
 }   // 0x25
 
 void i8080::opcode_mvih() {
-    // Do Nothing
+  // Read Memory; h = MEM[byte2]
+  h = MEMORY_READ(pc++);
 }   // 0x26
 
 void i8080::opcode_daa() {
-    // Do Nothing
+  // If the carry bit is set or if the value of bits 0-3 exceed 9 += 0x06
+  if((a & 0x0F) > 9 || IS_CARRY(flags)) {
+    std::uint16_t value = a + 0x06;
+    SET_CARRY((a & 0x08) > (value & 0x08), &flags);
+    a = value & 0xFF;
+  }
+
+  if((a >> 4) > 9 || IS_CARRY(flags)) {
+    std::uint16_t value = a + 0x60;
+    SET_CARRY((a & 0x80) > (value & 0x80), &flags);
+    a = value & 0xFF;
+  }
 }    // 0x27
 
 void i8080::opcode_dadh() {
@@ -313,28 +347,33 @@ void i8080::opcode_dcrl() {
 }   // 0x2d
 
 void i8080::opcode_mvil() {
-    // Do Nothing
+  // Read Memory; l = MEM[byte2]
+  l = MEMORY_READ(pc++);
 }   // 0x2e
 
 void i8080::opcode_cma() {
-    // Do Nothing
+  a = ~a;
 }    // 0x2f
 
 
 void i8080::opcode_sim() {
-    // Do Nothing
+    // Do Nothing yet
 }    // 0x30
 
 void i8080::opcode_lxisp() {
-    // Do Nothing
+  std::uint16_t temp = READ_MEMORY(pc++);
+  temp = (READ_MEMORY(pc++) << 4);
+  sp = temp;
 }  // 0x31
 
 void i8080::opcode_sta() {
-    // Do Nothing
+  // Store a in memory addr pc++
+  MEMORY_WRITE(pc++, a);
 }    // 0x32
 
 void i8080::opcode_inxsp() {
-    // Do Nothing
+  // Incr sp
+  sp++;
 }  // 0x33
 
 void i8080::opcode_inrm() {
@@ -368,22 +407,33 @@ void i8080::opcode_dcrm() {
 }   // 0x35
 
 void i8080::opcode_mvim() {
-    // Do Nothing
+  // Write byte2 to addr[hl]
+  std::uint16_t addr = (h << 8) + l;
+  MEMORY_WRITE(addr, pc++);
 }   // 0x36
 
 void i8080::opcode_stc() {
-    // Do Nothing
+  // Set the carry flag
+  SET_CARRY(true, &flags);
 }    // 0x37
 
 void i8080::opcode_dadsp() {
-    // Do Nothing
+  // Add hl and sp
+  std::uint32_t hl = (h << 8) + l;
+  std::uint32_t value = hl + sp;
+
+  h = (value & 0xFF00) >> 8;
+  l = (value & 0xFF);
+  SET_CARRY(value > 0xFF, &flags);
 }  // 0x39
 
 void i8080::opcode_lda() {
-    // Do Nothing
+  // Load a from memory
+  a = MEMORY_READ(pc++);
 }    // 0x3a
 
 void i8080::opcode_dcxsp() {
+  // Decr sp
   sp--;
 }  // 0x3b
 
@@ -408,11 +458,13 @@ void i8080::opcode_dcra() {
 }   // 0x3d
 
 void i8080::opcode_mvia() {
-    // Do Nothing
+  // Read Memory; a = MEM[byte2]
+  a = MEMORY_READ(pc++);
 }   // 0x3e
 
 void i8080::opcode_cmc() {
-    // Do Nothing
+  // Clear carry flags
+  SET_CARRY(false, &flags);
 }    // 0x3f
 
 
@@ -1043,193 +1095,438 @@ void i8080::opcode_sbba() {
 
 
 void i8080::opcode_anab() {
-    // Do Nothing
+  std::uint8_t value = a & b;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xa0
 
 void i8080::opcode_anac() {
-    // Do Nothing
+  std::uint8_t value = a & c;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xa1
 
 void i8080::opcode_anad() {
-    // Do Nothing
+  std::uint8_t value = a & d;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xa2
 
 void i8080::opcode_anae() {
-    // Do Nothing
+  std::uint8_t value = a & e;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xa3
 
 void i8080::opcode_anah() {
-    // Do Nothing
+  std::uint8_t value = a & h;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xa4
 
 void i8080::opcode_anal() {
-    // Do Nothing
+  std::uint8_t value = a & l;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xa5
 
 void i8080::opcode_anam() {
-    // Do Nothing
+  std::uint8_t value = a & READ_MEMORY((h << 4) + l);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xa6
 
 void i8080::opcode_anaa() {
-    // Do Nothing
+  std::uint8_t value = a & a;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xa7
 
 void i8080::opcode_xrab() {
-    // Do Nothing
+  std::uint8_t value = a ^ b;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xa8
 
 void i8080::opcode_xrac() {
-    // Do Nothing
+  std::uint8_t value = a ^ c;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xa9
 
 void i8080::opcode_xrad() {
-    // Do Nothing
+  std::uint8_t value = a ^ d;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xaa
 
 void i8080::opcode_xrae() {
-    // Do Nothing
+  std::uint8_t value = a ^ e;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xab
 
 void i8080::opcode_xrah() {
-    // Do Nothing
+  std::uint8_t value = a ^ h;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xac
 
 void i8080::opcode_xral() {
-    // Do Nothing
+  std::uint8_t value = a ^ l;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xad
 
 void i8080::opcode_xram() {
-    // Do Nothing
+  std::uint8_t value = a ^ READ_MEMORY((h << 4) + l);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xae
 
 void i8080::opcode_xraa() {
-    // Do Nothing
+  std::uint8_t value = a ^ a;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xaf
 
 
 void i8080::opcode_orab() {
-    // Do Nothing
+  std::uint8_t value = a | b;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xb0
 
 void i8080::opcode_orac() {
-    // Do Nothing
+  std::uint8_t value = a | c;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xb1
 
 void i8080::opcode_orad() {
-    // Do Nothing
+  std::uint8_t value = a | d;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xb2
 
 void i8080::opcode_orae() {
-    // Do Nothing
+  std::uint8_t value = a | e;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xb3
 
 void i8080::opcode_orah() {
-    // Do Nothing
+  std::uint8_t value = a | h;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xb4
 
 void i8080::opcode_oral() {
-    // Do Nothing
+  std::uint8_t value = a | l;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xb5
 
 void i8080::opcode_oram() {
-    // Do Nothing
+  std::uint8_t value = a | READ_MEMORY((h << 4) + l);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xb6
 
 void i8080::opcode_oraa() {
-    // Do Nothing
+  std::uint8_t value = a | a;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xb7
 
 void i8080::opcode_cmpb() {
-    // Do Nothing
+  // Subtr b from a for comparison
+  std::uint16_t value = a - b;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
 }   // 0xb8
 
 void i8080::opcode_cmpc() {
-    // Do Nothing
+  // Subtr c from a for comparison
+  std::uint16_t value = a - c;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
 }   // 0xb9
 
 void i8080::opcode_cmpd() {
-    // Do Nothing
+  // Subtr d from a for comparison
+  std::uint16_t value = a - d;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
 }   // 0xba
 
 void i8080::opcode_cmpe() {
-    // Do Nothing
+  // Subtr e from a for comparison
+  std::uint16_t value = a - e;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
 }   // 0xbb
 
 void i8080::opcode_cmph() {
-    // Do Nothing
+  // Subtr h from a for comparison
+  std::uint16_t value = a - h;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
 }   // 0xbc
 
 void i8080::opcode_cmpl() {
-    // Do Nothing
+  // Subtr l from a for comparison
+  std::uint16_t value = a - l;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
 }   // 0xbd
 
 void i8080::opcode_cmpm() {
-    // Do Nothing
+  // Subtr mem from a for comparison
+  std::uint16_t value = a - READ_MEMORY((h << 4) + l);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
 }   // 0xbe
 
 void i8080::opcode_cmpa() {
-    // Do Nothing
+  // Subtr a from a for comparison
+  std::uint16_t value = a - a;
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
 }   // 0xbf
 
 
 void i8080::opcode_rnz() {
-    // Do Nothing
+  // RET if not zero
+  if(IS_ZERO(flags))
+    return;
+
+  opcode_ret();
 }    // 0xc0
 
 void i8080::opcode_popb() {
-    // Do Nothing
+  // Pop word off stack to bc pair
+  c = MEMORY_READ(sp);
+  b = MEMORY_READ(sp + 1);
+  sp += 2;
+
 }   // 0xc1
 
 void i8080::opcode_jnz() {
-    // Do Nothing
+  if(IS_ZERO(flags))
+    return;
+
+  opcode_jmp();
 }    // 0xc2
 
 void i8080::opcode_jmp() {
-    // Do Nothing
+  std::uint16_t addr = MEMORY_READ(pc++);
+  addr += (MEMORY_READ(pc + 1) << 8);
+  pc = addr;
 }    // 0xc3
 
 void i8080::opcode_cnz() {
-    // Do Nothing
+  if(IS_ZERO(flags))
+    return;
+
+  opcode_call();
 }    // 0xc4
 
 void i8080::opcode_pushb() {
-    // Do Nothing
+  // Write bc pair onto the stack
+  MEMORY_WRITE(sp--, b);
+  MEMORY_WRITE(sp--, c);
 }  // 0xc5
 
 void i8080::opcode_adid() {
-    // Do Nothing
+  // Use uint16_t to capture the carry
+  std::uint16_t value = a + MEMORY_READ(pc++);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(value > 0xFF, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0xc6
 
-void i8080::opcode_rst0() {
-    // Do Nothing
+void i8080::opcode_rst() {
+  sp -= 2;
+  MEMORY_WRITE(sp, pc & 0x00FF);
+  MEMORY_WRITE(sp + 1, (pc >> 8) & 0xFF);
 }   // 0xc7
 
 void i8080::opcode_rz() {
-    // Do Nothing
+  // RET if Zero
+  if(!IS_ZERO(flags))
+    return;
+
+  opcode_ret();
 }     // 0xc8
 
 void i8080::opcode_ret() {
-    // Do Nothing
+  // Pull return addr from sp
+  pc = (MEMORY_READ(sp + 1) << 8) + MEMORY_READ(sp);
+  sp += 2;
 }    // 0xc9
 
 void i8080::opcode_jz() {
-    // Do Nothing
+  // JMP if Zero
+  if(!IS_ZERO(flags))
+    return;
+
+  opcode_jmp();
 }     // 0xca
 
 void i8080::opcode_cz() {
-    // Do Nothing
+  // If Zero call addr
+  if(!IS_ZERO(flags))
+    return;
+
+  opcode_call();
 }     // 0xcc
 
 void i8080::opcode_call() {
-    // Do Nothing
+  // Write addr to memory and set pc = addr
+  MEMORY_WRITE(sp - 1, (pc >> 8) & 0xFF);
+  MEMORY_WRITE(sp - 2, pc & 0xFF);
+  sp += 2;
+  pc = (MEMORY_READ(pc + 2) << 8) + MEMORY_READ(pc + 1);
 }   // 0xcd
 
 void i8080::opcode_acid() {
-    // Do Nothing
+  // Add a + data + cy
+  std::uint16_t value = (a + MEMORY_READ(pc++)) + (flags & FLAG_CARRY);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0xce
 
 void i8080::opcode_rst1() {
-    // Do Nothing
+  opcode_rst();
+  pc = 0x0008;
 }   // 0xcf
 
 
@@ -1262,7 +1559,8 @@ void i8080::opcode_suid() {
 }   // 0xd6
 
 void i8080::opcode_rst2() {
-    // Do Nothing
+  opcode_rst();
+  pc = 0x0010;
 }   // 0xd7
 
 void i8080::opcode_rc() {
@@ -1286,7 +1584,8 @@ void i8080::opcode_sbid() {
 }   // 0xde
 
 void i8080::opcode_rst3() {
-    // Do Nothing
+  opcode_rst();
+  pc = 0x0018;
 }   // 0xdf
 
 
@@ -1319,7 +1618,8 @@ void i8080::opcode_anid() {
 }   // 0xe6
 
 void i8080::opcode_rst4() {
-    // Do Nothing
+  opcode_rst();
+  pc = 0x0020;
 }   // 0xe7
 
 void i8080::opcode_rpe() {
@@ -1347,7 +1647,8 @@ void i8080::opcode_xrid() {
 }   // 0xee
 
 void i8080::opcode_rst5() {
-    // Do Nothing
+  opcode_rst();
+  pc = 0x0028;
 }   // 0xef
 
 
@@ -1380,7 +1681,8 @@ void i8080::opcode_orid() {
 }   // 0xf6
 
 void i8080::opcode_rst6() {
-    // Do Nothing
+  opcode_rst();
+  pc = 0x0030;
 }   // 0xf7
 
 void i8080::opcode_rm() {
@@ -1408,5 +1710,6 @@ void i8080::opcode_cpid() {
 }   // 0xfe
 
 void i8080::opcode_rst7() {
-    // Do Nothing
+  opcode_rst();
+  pc = 0x0038;
 }   // 0xff

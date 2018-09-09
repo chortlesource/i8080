@@ -19,18 +19,18 @@ x Implement Reset
 x Implement push
 x Implement pop
 x Implement Ops 00 - 0f
-* Implement Ops 10 - 1f
-* Implement Ops 20 - 2f
-* Implement Ops 30 - 3f
+x Implement Ops 10 - 1f
+x Implement Ops 20 - 2f
+x Implement Ops 30 - 3f
 x Implement Ops 40 - 4f
 x Implement Ops 50 - 5f
 x Implement Ops 60 - 6f
 x Implement Ops 70 - 7f
 x Implement Ops 80 - 8f
 x Implement Ops 90 - 9f
-* Implement Ops a0 - af
-* Implement Ops b0 - bf
-* Implement Ops c0 - cf
+x Implement Ops a0 - af
+x Implement Ops b0 - bf
+x Implement Ops c0 - cf
 * Implement Ops d0 - df
 * Implement Ops e0 - ef
 * Implement Ops f0 - ff
