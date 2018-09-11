@@ -1531,31 +1531,54 @@ void i8080::opcode_rst1() {
 
 
 void i8080::opcode_rnc() {
-    // Do Nothing
+  // Return if !carry
+  if(IS_CARRY(flags))
+    return;
+
+  opcode_ret();
 }    // 0xd0
 
 void i8080::opcode_popd() {
-    // Do Nothing
+  // Pop word of stack to de pair
+  e = MEMORY_READ(sp);
+  d = MEMORY_READ(sp + 1);
+  sp += 2;
 }   // 0xd1
 
 void i8080::opcode_jnc() {
-    // Do Nothing
+  // Jump if !carry to addr
+  if(IS_CARRY(flags))
+    return;
+
+  opcode_jmp();
 }    // 0xd2
 
 void i8080::opcode_outd() {
-    // Do Nothing
+    // Do Nothing yet
 }   // 0xd3
 
 void i8080::opcode_cnc() {
-    // Do Nothing
+  // Call if !carry
+  if(IS_CARRY(flags))
+    return;
+
+  opcode_call();
 }    // 0xd4
 
 void i8080::opcode_pushd() {
-    // Do Nothing
+  MEMORY_WRITE(sp--, d);
+  MEMORY_WRITE(sp--, e);
 }  // 0xd5
 
 void i8080::opcode_suid() {
-    // Do Nothing
+  // Subtract byte2 from a
+  std::uint16_t value = a - MEMORY_READ(pc++);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0xd6
 
 void i8080::opcode_rst2() {
@@ -1564,23 +1587,42 @@ void i8080::opcode_rst2() {
 }   // 0xd7
 
 void i8080::opcode_rc() {
-    // Do Nothing
+  // Return on carry
+  if(!IS_CARRY(flags))
+    return;
+
+  opcode_ret();
 }     // 0xd8
 
 void i8080::opcode_jc() {
-    // Do Nothing
+  // Jump if carry
+  if(!IS_CARRY(flags))
+    return;
+
+  opcode_jmp();
 }     // 0xda
 
 void i8080::opcode_ind() {
-    // Do Nothing
+    // Do Nothing yet
 }    // 0xdb
 
 void i8080::opcode_cc() {
-    // Do Nothing
+  // if carry call addr
+  if(!IS_CARRY(flags))
+    return;
+
+  opcode_call();
 }     // 0xdc
 
 void i8080::opcode_sbid() {
-    // Do Nothing
+  // Subtract byte2 and borrow from a
+  std::uint16_t value = (a - MEMORY_READ(pc++)) - (flags & FLAG_CARRY);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
+  a = value;
 }   // 0xde
 
 void i8080::opcode_rst3() {
@@ -1590,31 +1632,62 @@ void i8080::opcode_rst3() {
 
 
 void i8080::opcode_rpo() {
-    // Do Nothing
+  // Return if parity == odd
+  if(IS_PARITY(flags))
+    return;
+
+  opcode_ret();
 }    // 0xe0
 
 void i8080::opcode_poph() {
-    // Do Nothing
+  // Pop word from stack to hl pair
+  l = MEMORY_READ(sp);
+  h = MEMORY_READ(sp + 1);
+  sp += 2;
 }   // 0xe1
 
 void i8080::opcode_jpo() {
-    // Do Nothing
+  if(IS_PARITY(flags))
+    return;
+
+  opcode_jmp();
 }    // 0xe2
 
 void i8080::opcode_xthl() {
-    // Do Nothing
+  // Exchange hl with sp & hl
+  std::uint8_t high = h;
+  std::uint8_t low = l;
+
+  l = MEMORY_READ(sp);
+  h = MEMORY_READ(sp + 1);
+
+  MEMORY_WRITE(sp, low);
+  MEMORY_WRITE(sp + 1, high);
 }   // 0xe3
 
 void i8080::opcode_cpo() {
-    // Do Nothing
+  // If parity == odd call addr
+  if(IS_PARITY(flags))
+    return;
+
+  opcode_call();
 }    // 0xe4
 
 void i8080::opcode_pushh() {
-    // Do Nothing
+  // Push word hl onto the stack
+  MEMORY_WRITE(sp--, h);
+  MEMORY_WRITE(sp--, l);
 }  // 0xe5
 
 void i8080::opcode_anid() {
-    // Do Nothing
+  // And with MEM[byte2]
+  std::uint8_t value = a & MEMORY_READ(pc++);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xe6
 
 void i8080::opcode_rst4() {
@@ -1623,27 +1696,54 @@ void i8080::opcode_rst4() {
 }   // 0xe7
 
 void i8080::opcode_rpe() {
-    // Do Nothing
+  // Return if parity == even
+  if(!IS_PARITY(flags))
+    return;
+
+  opcode_ret();
 }    // 0xe8
 
 void i8080::opcode_pchl() {
-    // Do Nothing
+  // Move hl to pc
+  pc = (h << 8) + l;
 }   // 0xe9
 
 void i8080::opcode_jpe() {
-    // Do Nothing
+  // Jump if parity == even
+  if(!IS_PARITY(flags))
+    return;
+
+  opcode_jmp();
 }    // 0xea
 
 void i8080::opcode_xchg() {
-    // Do Nothing
+  // Exchange hl with de
+  std::uint8_t high = d;
+  std::uint8_t low = e;
+
+  d = h;
+  e = l;
+  h = high;
+  l = low;
 }   // 0xeb
 
 void i8080::opcode_cpe() {
-    // Do Nothing
+  // Call addr if parity == even
+  if(!IS_PARITY(flags))
+    return;
+
+  opcode_call();
 }    // 0xec
 
 void i8080::opcode_xrid() {
-    // Do Nothing
+  // Exclusive or with MEM[byte2]
+  std::uint8_t value = a ^ MEMORY_READ(pc++);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xee
 
 void i8080::opcode_rst5() {

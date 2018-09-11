@@ -31,8 +31,8 @@ x Implement Ops 90 - 9f
 x Implement Ops a0 - af
 x Implement Ops b0 - bf
 x Implement Ops c0 - cf
-* Implement Ops d0 - df
-* Implement Ops e0 - ef
+x Implement Ops d0 - df
+x Implement Ops e0 - ef
 * Implement Ops f0 - ff
 * Write Debug Class
 * Write Debug Table
