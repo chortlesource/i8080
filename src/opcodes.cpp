@@ -1753,31 +1753,57 @@ void i8080::opcode_rst5() {
 
 
 void i8080::opcode_rp() {
-    // Do Nothing
+  // If parity then RET
+  if(!IS_PARITY(flags))
+    return;
+
+  opcode_ret();
 }     // 0xf0
 
 void i8080::opcode_poppsw() {
-    // Do Nothing
+  // Pop flags and accumulator from stack
+  flags = MEMORY_READ(sp);
+  a = MEMORY_READ(sp + 1);
+  sp += 2;
 } // 0xf1
 
 void i8080::opcode_jp() {
-    // Do Nothing
+  // If positive parity JMP
+  if(!IS_PARITY(flags))
+    return;
+
+  opcode_jmp();
 }     // 0xf2
 
 void i8080::opcode_di() {
+  // Set interupt enabled false;
   interuptEnabled = false;
 }     // 0xf3
 
 void i8080::opcode_cp() {
-    // Do Nothing
+  // If Positive parity CALL
+  if(!IS_PARITY(flags))
+    return;
+
+  opcode_call();
 }     // 0xf4
 
 void i8080::opcode_pushpsw() {
-    // Do Nothing
+  // Write flags and accumulator to memory
+  MEMORY_WRITE(MEMORY_READ(sp - 2), flags);
+  MEMORY_WRITE(MEMORY_READ(sp - 1), a);
+  sp -= 2;
 }// 0xf5
 
 void i8080::opcode_orid() {
-    // Do Nothing
+  // A = A | Data
+  std::uint8_t value = a | MEMORY_READ(pc++);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(false, &flags);
+  SET_AUX(false, &flags);
+  a = value;
 }   // 0xf6
 
 void i8080::opcode_rst6() {
@@ -1786,27 +1812,47 @@ void i8080::opcode_rst6() {
 }   // 0xf7
 
 void i8080::opcode_rm() {
-    // Do Nothing
+  // RET if(is_sign)
+  if(!IS_SIGN(flags))
+    return;
+
+  opcode_ret();
 }     // 0xf8
 
 void i8080::opcode_sphl() {
-    // Do Nothing
+  // SP = HL
+  sp = (h << 8) + l;
 }   // 0xf9
 
 void i8080::opcode_jm() {
-    // Do Nothing
+  // JMP if(is_sign)
+  if(!IS_SIGN(flags))
+    return;
+
+  opcode_jmp();
 }     // 0xfa
 
 void i8080::opcode_ei() {
+  // Enable interupt
   interuptEnabled = true;
 }     // 0xfb
 
 void i8080::opcode_cm() {
-    // Do Nothing
+  // CALL if(is_sign)
+  if(!IS_SIGN(flags))
+    return;
+
+  opcode_call();
 }     // 0xfc
 
 void i8080::opcode_cpid() {
-    // Do Nothing
+  // Compare data with accumulator
+  std::uint8_t value = a - MEMORY_READ(pc++);
+  SET_ZERO(!value, &flags);
+  SET_SIGN(value & 0x80, &flags);
+  SET_PARITY((getParity(value)), &flags);
+  SET_CARRY(a < value, &flags);
+  SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
 }   // 0xfe
 
 void i8080::opcode_rst7() {

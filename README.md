@@ -9,7 +9,7 @@
 immediate, direct and indirect (using HL)
 *Also if consider branching we have relative to PC.*
 
-- IMMEDIATE - THe opperand (ie low byte is the address ie LDA #$22 22 is loaded)
+- IMMEDIATE - The opperand (ie low byte is the address ie LDA #$22 22 is loaded)
 
 >> TODO: - Whats next?
 
@@ -33,7 +33,7 @@ x Implement Ops b0 - bf
 x Implement Ops c0 - cf
 x Implement Ops d0 - df
 x Implement Ops e0 - ef
-* Implement Ops f0 - ff
+x Implement Ops f0 - ff
 * Write Debug Class
 * Write Debug Table
 * Implement Debugger
