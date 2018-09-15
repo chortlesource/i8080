@@ -24,8 +24,11 @@ DEALINGS IN THE SOFTWARE.
 #include <iostream>
 #include <string>
 #include <cctype>
+#include <iomanip>
 #include <bitset>
 #include <array>
+
+#include <debug.hpp>
 
 // ------- Miscelaneous Variables / Functions
 
