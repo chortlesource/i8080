@@ -66,9 +66,11 @@ class i8080 {
 private:
   // Emulation Variables
   bool initialized;
+  bool debug_i8080;
   bool none_opcode;
   bool halt;
   bool interuptEnabled;
+  i8080_DEBUG DEBUG;
   std::uint8_t interuptPending;
   std::uint32_t cycles;
 
@@ -363,7 +365,7 @@ private:
   void opcode_rst7();   // 0xff
 
   // CPU Functions
-  const bool& getParity(uint16_t value);
+  const bool& getParity(std::uint16_t value);
   void stack_push(std::uint16_t value);
   std::uint16_t stack_pop();
 
@@ -380,7 +382,7 @@ public:
   void Open(const char *path);
   void Run(std::uint32_t num_cycles);
   void Reset();
-  void Debug();
+  void Debug(const bool& value, std::string path);
 
 };
 

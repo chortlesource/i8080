@@ -16,9 +16,9 @@ DEALINGS IN THE SOFTWARE.
 
 #include <i8080>
 
-const bool& i8080::getParity(uint16_t value) {
+const bool& i8080::getParity(std::uint16_t value) {
   // Iterate through the bit to establish if it has an even or odd parity of 1's
-  uint8_t count = 0;
+  std::uint8_t count = 0;
   for(int i = 0; i < 16; i++) {
     if(value & 0x01)
       count++
@@ -36,7 +36,7 @@ void i8080::stack_push(std::uint16_t value) {
 }
 
 std::uint16_t i8080::stack_pop() {
-    uint16_t value = (MEMORY_READ(sp + 1) << 8) | MEMORY_READ(sp);
+    std::uint16_t value = (MEMORY_READ(sp + 1) << 8) | MEMORY_READ(sp);
     sp += 2;
     return value;
 }
@@ -48,6 +48,7 @@ void i8080::exec(OPCODE instr) {
 
 std::uint8_t i8080::MEMORY_READ(std::uint16_t addr) {
   // Read memory address 'addr'
+  DEBUG.appendMemory(addr, MEMORY[addr]);
   return MEMORY[addr];
 }
 
@@ -326,6 +327,7 @@ i8080::i8080() {
   instrtable[0xff] = &i8080::opcode_rst7();   // 0xff
 
   Reset();
+  debug_i8080 = false;  // Don't debug by default
 
   return;
 }
@@ -339,6 +341,33 @@ void i8080::Open(const char *path) {
 void i8080::Run(std::uint32_t num_cycles) {
   if(!initialized || halt)
     return;
+
+  std::uint32_t cycles_start = cycles
+  std::uint8_t opcode;
+  OPCODE instr
+
+  pc = 0;
+
+  // Start our debugging session
+  if(debug_i8080)
+    DEBUG.start();
+
+  while(cycles_start + num_cycles > cycles && !none_opcode && !halt) {
+    opcode = MEMORY_READ(pc++);   // Fetch
+    instr = instrtable[opcode];   // Decode
+
+    exec(instr);                  // Execute
+
+    cycles++;
+
+    // Append to our file the CPU status
+    if(debug_i8080)
+      DEBUG.append(opcode, a, b, c, d, e, h, l, flags, pc, sp);
+  }
+
+  // End debugging session
+  if(debug_i8080)
+    DEBUG.stop();
 
   // Do nothing
 }
@@ -371,9 +400,12 @@ void i8080::Reset() {
   initialized = true;
 }
 
-void i8080::Debug() {
+void i8080::Debug(const bool& value, std::string path) {
   if(!initialized)
     return;
 
-  // Do nothing
+  debug_i8080 = value;
+
+  if(value)
+    init(path);
 }

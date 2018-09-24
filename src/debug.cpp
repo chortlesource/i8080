@@ -44,6 +44,16 @@ void i8080_DEBUG::append(std::uint8_t opcode, std::uint8_t a, std::uint8_t b, st
     illegal = true;
 }
 
+void i8080_DEBUG::appendMemory(std::uint16_t addr, uint8_t value) {
+  if(illegal)
+    return;
+
+  if(OUT.is_open()) {
+    OUT << "| MEMORY READ: 0x" << std::hex << std::setw(4) << unsigned(addr) <<
+    " | FOUND: 0x" << std::hex << std::setw(2) << unsigned(value) << std::endl;
+  }
+}
+
 void i8080_DEBUG::stop() {
   OUT << "\n###############################################################################" << std::endl << std::endl;
   OUT.close();
