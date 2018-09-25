@@ -16,16 +16,20 @@ DEALINGS IN THE SOFTWARE.
 
 #include <i8080>
 
+// ------- i8080_DEBUG Implementation
+
 void i8080_DEBUG::initalize(const char *path) {
   file = path;  // Configure our log file
   illegal = false;  // Reset our illegal catch
 }
+
 
 void i8080_DEBUG::start() {
   // Open our log file and print a header
   OUT.open(filename, std::ofstream::out | std::ofstream::app);
   OUT << std::endl << "################################## DEBUGGING ##################################" << std::endl
 }
+
 
 void i8080_DEBUG::append(std::uint8_t opcode, std::uint8_t a, std::uint8_t b, std::uint8_t c, std::uint8_t d, std::uint8_t e, std::uint8_t h, std::uint8_t l, std::uint8_t flags, std::uint16_t pc, std::uint16_t sp) {
   if(illegal || !enabled)
@@ -49,6 +53,7 @@ void i8080_DEBUG::append(std::uint8_t opcode, std::uint8_t a, std::uint8_t b, st
     illegal = true;
 }
 
+
 void i8080_DEBUG::appendMemory(std::uint16_t addr, uint8_t value) {
   if(illegal || !enabled)
     return;
@@ -59,6 +64,7 @@ void i8080_DEBUG::appendMemory(std::uint16_t addr, uint8_t value) {
     " | FOUND: 0x" << std::hex << std::setw(2) << unsigned(value) << std::endl;
   }
 }
+
 
 void i8080_DEBUG::stop() {
   // Print out our footer and close the log file

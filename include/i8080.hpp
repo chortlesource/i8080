@@ -30,6 +30,10 @@ DEALINGS IN THE SOFTWARE.
 
 #include <debug.hpp>
 
+// Local Includes
+#include <memory.hpp>
+#include <debug.hpp>
+
 // ------- Miscelaneous Variables / Functions
 
 // Memory Constants
@@ -66,11 +70,13 @@ class i8080 {
 private:
   // Emulation Variables
   bool initialized;
-  bool debug_i8080;
   bool none_opcode;
   bool halt;
   bool interuptEnabled;
+
   i8080_DEBUG DEBUG;
+  i8080_MEMORY MEMORY;
+
   std::uint8_t interuptPending;
   std::uint32_t cycles;
 
@@ -91,9 +97,6 @@ private:
 
   // Flags / Status Register
   std::uint8_t flags;
-
-  // Memory
-  std::array<std::uint8_t, MEM_SIZE> MEMORY;
 
   // Opcode function table
   typedef void (i8080::*OPCODE)();
@@ -380,6 +383,7 @@ public:
 
   // User Functions
   void Open(const char *path);
+  void OpenIH(const char *path);
   void Run(std::uint32_t num_cycles);
   void Reset();
   void Debug(const bool& value, const char *path);
