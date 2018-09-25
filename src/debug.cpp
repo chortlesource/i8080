@@ -16,10 +16,9 @@ DEALINGS IN THE SOFTWARE.
 
 #include <i8080>
 
-void i8080_DEBUG::initalize(std::string filename) {
-  file = filename;  // Configure our log file
+void i8080_DEBUG::initalize(const char *path) {
+  file = path;  // Configure our log file
   illegal = false;  // Reset our illegal catch
-  enabled = false;  // Disabled by default
 }
 
 void i8080_DEBUG::start() {

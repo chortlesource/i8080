@@ -50,7 +50,7 @@ private:
   std::ofstream OUT;
 
 public:
-  void initialize(std::string filename);
+  void initialize(const char *path);
 
   void start();
   void append(std::uint8_t opcode, std::uint8_t a, std::uint8_t b, std::uint8_t c, std::uint8_t d, std::uint8_t e, std::uint8_t h, std::uint8_t l, std::uint8_t flags, std::uint16_t pc, std::uint16_t sp);

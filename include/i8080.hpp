@@ -382,7 +382,7 @@ public:
   void Open(const char *path);
   void Run(std::uint32_t num_cycles);
   void Reset();
-  void Debug(const bool& value, std::string path);
+  void Debug(const bool& value, const char *path);
 
 };
 
