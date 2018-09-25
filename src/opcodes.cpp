@@ -428,7 +428,7 @@ void i8080::opcode_inxsp() {
 
 void i8080::opcode_inrm() {
   // Obtain the value from memory address hl
-  uint8_t mem = MEMORY_READ((h << 8) + l);
+  std::uint8_t mem = MEMORY_READ((h << 8) + l);
 
   // Use uint16_t to capture the carry
   std::uint16_t value = mem + 1;
@@ -444,7 +444,7 @@ void i8080::opcode_inrm() {
 
 void i8080::opcode_dcrm() {
   // Obtain the value from memory address hl
-  uint8_t mem = MEMORY_READ((h << 8) + l);
+  std::uint8_t mem = MEMORY_READ((h << 8) + l);
 
   // Use uint16_t to capture the carry
   std::uint16_t value = mem - 1;
@@ -927,7 +927,7 @@ void i8080::opcode_addl() {
 
 void i8080::opcode_addm() {
   // Obtain the value from memory address hl
-  uint8_t mem = MEMORY_READ((h << 8) + l);
+  std::uint8_t mem = MEMORY_READ((h << 8) + l);
 
   // Use uint16_t to capture the carry
   std::uint16_t value = a + mem;
@@ -1026,7 +1026,7 @@ void i8080::opcode_adcl() {
 
 void i8080::opcode_adcm() {
   // Obtain the value from memory address hl
-  uint8_t mem = MEMORY_READ((h << 8) + l);
+  std::uint8_t mem = MEMORY_READ((h << 8) + l);
 
   // Use uint16_t to capture the carry
   std::uint16_t value = a + mem + IS_CARRY(flags);
@@ -1126,7 +1126,7 @@ void i8080::opcode_subl() {
 
 void i8080::opcode_subm() {
   // Obtain the value from memory address hl
-  uint8_t mem = MEMORY_READ((h << 8) + l);
+  std::uint8_t mem = MEMORY_READ((h << 8) + l);
 
   // Use uint16_t to capture the carry
   std::uint16_t value = a - mem;
@@ -1225,7 +1225,7 @@ void i8080::opcode_sbbl() {
 
 void i8080::opcode_sbbm() {
   // Obtain the value from memory address hl
-  uint8_t mem = MEMORY_READ((h << 8) + l);
+  std::uint8_t mem = MEMORY_READ((h << 8) + l);
 
   // Use uint16_t to capture the carry
   std::uint16_t value = a - mem - IS_CARRY(flags);

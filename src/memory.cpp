@@ -79,9 +79,9 @@ bool MEMORY::loadLine(std::string line) {
     return false;
   }
 
-  uint8_t bytecount = hextoint(line.substr(1, 2)); // Obtain bytecount
-  uint16_t addr = hextoint(line.substr(3, 4)); // Obtain the address
-  uint8_t recordtype = hextoint(line.substr(7, 2)); // Obtain the record type
+  std::uint8_t bytecount = hextoint(line.substr(1, 2)); // Obtain bytecount
+  std::uint16_t addr = hextoint(line.substr(3, 4)); // Obtain the address
+  std::uint8_t recordtype = hextoint(line.substr(7, 2)); // Obtain the record type
 
   switch(recordtype) {
     case 00: // Data
