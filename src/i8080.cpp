@@ -16,6 +16,8 @@ DEALINGS IN THE SOFTWARE.
 
 #include <i8080>
 
+// ------- i8080 Implementation
+
 const bool& i8080::getParity(std::uint16_t value) {
   // Iterate through the bit to establish if it has an even or odd parity of 1's
   std::uint8_t count = 0;
@@ -29,11 +31,13 @@ const bool& i8080::getParity(std::uint16_t value) {
   return !(count & 0x01);
 }
 
+
 void i8080::stack_push(std::uint16_t value) {
     sp -= 2;
     MEMORY_WRITE(sp, value & 0x00FF);
     MEMORY_WRITE(sp + 1, (value & 0xFF00) >> 8);
 }
+
 
 std::uint16_t i8080::stack_pop() {
     std::uint16_t value = (MEMORY_READ(sp + 1) << 8) | MEMORY_READ(sp);
@@ -41,21 +45,25 @@ std::uint16_t i8080::stack_pop() {
     return value;
 }
 
+
 void i8080::exec(OPCODE instr) {
   // Execute the relevant opcode function
   (this->*instr)();
 }
 
+
 std::uint8_t i8080::MEMORY_READ(std::uint16_t addr) {
   // Read memory address 'addr'
-  DEBUG.appendMemory(addr, MEMORY[addr]);
-  return MEMORY[addr];
+  DEBUG.appendMemory(addr, MEMORY.READ(addr));
+  return MEMORY.READ(addr);
 }
+
 
 void i8080::MEMORY_WRITE(std::uint16_t addr, std::uint8_t value) {
   // Store 'value' in memory address 'addr'
-  MEMORY[addr] = value;
+  MEMORY.WRITE(addr, value);
 }
+
 
 i8080::i8080() {
   // Provisionally fill all instructions with nones
@@ -327,16 +335,26 @@ i8080::i8080() {
   instrtable[0xff] = &i8080::opcode_rst7();   // 0xff
 
   Reset();
-  debug_i8080 = false;  // Don't debug by default
 
   return;
 }
 
+
 void i8080::Open(const char *path) {
-  if(!initialized)
+  if(!initialized || halt)
     return;
-  // Do nothing
+
+  MEMORY.loadFile(path);
 }
+
+
+void i8080::OpenIH(const char *path) {
+  if(!initialized || halt)
+    return;
+
+  MEMORY.loadHexFile(path);
+}
+
 
 void i8080::Run(std::uint32_t num_cycles) {
   if(!initialized || halt)
@@ -349,7 +367,7 @@ void i8080::Run(std::uint32_t num_cycles) {
   pc = 0;
 
   // Start our debugging session
-  if(debug_i8080)
+  if(DEBUG.isEnabled())
     DEBUG.start();
 
   while(cycles_start + num_cycles > cycles && !none_opcode && !halt) {
@@ -361,16 +379,15 @@ void i8080::Run(std::uint32_t num_cycles) {
     cycles++;
 
     // Append to our file the CPU status
-    if(debug_i8080)
+    if(DEBUG.isEnabled())
       DEBUG.append(opcode, a, b, c, d, e, h, l, flags, pc, sp);
   }
 
   // End debugging session
-  if(debug_i8080)
+  if(DEBUG.isEnabled())
     DEBUG.stop();
-
-  // Do nothing
 }
+
 
 void i8080::Reset() {
   // Reset Registers
@@ -400,8 +417,9 @@ void i8080::Reset() {
   initialized = true;
 }
 
+
 void i8080::Debug(const bool& value, std::string path) {
-  if(!initialized)
+  if(!initialized || halt)
     return;
 
   debug_i8080 = value;
