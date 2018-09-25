@@ -16,22 +16,27 @@ DEALINGS IN THE SOFTWARE.
 
 #include <i8080>
 
-void i8080_DEBUG::init(std::string filename) {
-  file = filename;
-  illegal = false;
+void i8080_DEBUG::initalize(std::string filename) {
+  file = filename;  // Configure our log file
+  illegal = false;  // Reset our illegal catch
+  enabled = false;  // Disabled by default
 }
 
 void i8080_DEBUG::start() {
-    OUT.open(filename, std::ofstream::out | std::ofstream::app);
-    OUT << std::endl << "################################## DEBUGGING ##################################" << std::endl
+  // Open our log file and print a header
+  OUT.open(filename, std::ofstream::out | std::ofstream::app);
+  OUT << std::endl << "################################## DEBUGGING ##################################" << std::endl
 }
 
 void i8080_DEBUG::append(std::uint8_t opcode, std::uint8_t a, std::uint8_t b, std::uint8_t c, std::uint8_t d, std::uint8_t e, std::uint8_t h, std::uint8_t l, std::uint8_t flags, std::uint16_t pc, std::uint16_t sp) {
-  if(illegal)
+  if(illegal || !enabled)
     return;
 
+  // Ascertain what instruction was called
   std::string instr = DEBUG_OPSTRING[opcode];
+
   if(OUT.is_open()) {
+    // Print output from the CPU to the log file
     OUT << "| " << instr << " | A: 0x" << std::hex << std::setw(2) << unsigned(a) <<
     " | B: 0x" << std::hex << std::setw(2) << unsigned(b) << " | C: 0x" << std::hex << std::setw(2) << unsigned(c) <<
     " | D: 0x" << std::hex << std::setw(2) << unsigned(d) << " | E: 0x" << std::hex << std::setw(2) << unsigned(e) <<
@@ -40,21 +45,24 @@ void i8080_DEBUG::append(std::uint8_t opcode, std::uint8_t a, std::uint8_t b, st
     " | " << std::bitset<8>(flags) << std::endl;
   }
 
+  // If it's an illegal instruction stop debugging something went wrong.
   if(!instr.compare("####"))
     illegal = true;
 }
 
 void i8080_DEBUG::appendMemory(std::uint16_t addr, uint8_t value) {
-  if(illegal)
+  if(illegal || !enabled)
     return;
 
   if(OUT.is_open()) {
+    // Print output from the memor read instruction
     OUT << "| MEMORY READ: 0x" << std::hex << std::setw(4) << unsigned(addr) <<
     " | FOUND: 0x" << std::hex << std::setw(2) << unsigned(value) << std::endl;
   }
 }
 
 void i8080_DEBUG::stop() {
+  // Print out our footer and close the log file
   OUT << "\n###############################################################################" << std::endl << std::endl;
   OUT.close();
 }

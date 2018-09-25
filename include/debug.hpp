@@ -19,6 +19,7 @@ DEALINGS IN THE SOFTWARE.
 
 // ------- Debug Constants
 
+// A static string table for CPU operations for convenience
 static const char *DEBUG_OPSTRING[256] {
   "NOP", "LXIB", "STAXB", "INXB", "INRB", "DCRB", "MVIB", "RLC", "####", "DADB", "LDAXB", "DCXB", "INRC", "DCRC", "MVIC", "RRC",
   "####", "LXID", "STAXD", "INXD", "INRD", "DCRD", "MVID", "RAL", "####", "DADD", "LDAXD", "DCXD", "INRE", "DCRE", "MVIE", "RAR",
@@ -42,16 +43,22 @@ static const char *DEBUG_OPSTRING[256] {
 
 class i8080_DEBUG {
 private:
-  std::string file;
+  bool enabled;
   bool illegal;
+
+  std::string file;
   std::ofstream OUT;
 
 public:
-  void init(std::string filename);
+  void initialize(std::string filename);
+
   void start();
   void append(std::uint8_t opcode, std::uint8_t a, std::uint8_t b, std::uint8_t c, std::uint8_t d, std::uint8_t e, std::uint8_t h, std::uint8_t l, std::uint8_t flags, std::uint16_t pc, std::uint16_t sp);
   void appendMemory(std::uint16_t addr, std::uint8_t value);
   void stop();
+
+  void setEnabled(const bool& value) { enabled = value; }
+  const bool& isEnabled() { return enabled; }
 };
 
 #endif // _DEBUG_HPP
