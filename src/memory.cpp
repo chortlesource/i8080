@@ -14,11 +14,11 @@ DEALINGS IN THE SOFTWARE.
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <i8080>
+#include <i8080.hpp>
 
 // ------- MEMORY Implementation
 
-unsigned int MEMORY::hextoint(std::string line) {
+unsigned int i8080_MEMORY::hextoint(std::string line) {
   int rvalue = 0;
 
   // Loop through the length of line
@@ -38,7 +38,7 @@ unsigned int MEMORY::hextoint(std::string line) {
 }
 
 
-bool MEMORY::checksum(std::string line) {
+bool i8080_MEMORY::checksum(std::string line) {
   int sum = 0;
   int pairs = (line.length() - 1) / 2 - 1; // Avoid the ':' and the 2's compliment
 
@@ -56,7 +56,7 @@ bool MEMORY::checksum(std::string line) {
 }
 
 
-bool MEMORY::loadLine(std::string line) {
+bool i8080_MEMORY::loadLine(std::string line) {
 
   if(line.length() == 0)
     return false;
@@ -107,17 +107,17 @@ bool MEMORY::loadLine(std::string line) {
 }
 
 
-void MEMORY::WRITE(uint16_t addr, uint8_t data) {
+void i8080_MEMORY::WRITE(uint16_t addr, uint8_t data) {
   MEMORY[addr] = data;
 }
 
 
-uint8_t MEMORY::READ(uint16_t addr) {
+uint8_t i8080_MEMORY::READ(uint16_t addr) {
   return MEMORY[addr];
 }
 
 
-void MEMORY::loadFile(const char *path) {
+void i8080_MEMORY::loadFile(const char *path) {
   std::ifstream input(path, std::ios::binary);
   if(input) {
     input.seekg (0, input.end);
@@ -136,7 +136,7 @@ void MEMORY::loadFile(const char *path) {
 }
 
 
-void MEMORY::loadHexFile(const char *path) {
+void i8080_MEMORY::loadHexFile(const char *path) {
   std::ifstream input;
   input.open(path);
   if(!input) {
@@ -157,6 +157,6 @@ void MEMORY::loadHexFile(const char *path) {
 }
 
 
-void MEMORY::reset() {
+void i8080_MEMORY::reset() {
   MEMORY.fill(0);
 }

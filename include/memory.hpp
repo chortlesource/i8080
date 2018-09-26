@@ -19,6 +19,11 @@ DEALINGS IN THE SOFTWARE.
 
 // ------- Memory Variables
 
+// Memory Constants
+static const std::uint16_t MEM_SIZE = 0xFFFF; // 65535 bytes (64Kbytes)
+static const std::uint8_t INSTR_SIZE = 0xFF; // 256 bytes
+
+// Record Type Enumeration
 enum RECTYPE {
   hRecDataRecord=0,
 	hRecEOFRecord,

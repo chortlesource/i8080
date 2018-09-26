@@ -22,6 +22,7 @@ DEALINGS IN THE SOFTWARE.
 #include <cstdint>
 
 #include <iostream>
+#include <fstream>
 #include <string>
 #include <cctype>
 #include <iomanip>
@@ -36,17 +37,13 @@ DEALINGS IN THE SOFTWARE.
 
 // ------- Miscelaneous Variables / Functions
 
-// Memory Constants
-static const std::uint8_t MEM_SIZE = 0xFFFF; // 65535 bytes (64Kbytes)
-static const std::uint8_t INSTR_SIZE = 0x100; // 256 bytes
-
 // Flag Constants
 static const std::uint8_t FLAG_SIGN = 0x80;
 static const std::uint8_t FLAG_ZERO = 0x40;
 static const std::uint8_t FLAG_PAD1 = 0x20;
 static const std::uint8_t FLAG_AUX = 0x10;
 static const std::uint8_t FLAG_PAD2 = 0x08;
-static const std::uint8_t FLAG_PARITY = -0x04
+static const std::uint8_t FLAG_PARITY = 0x04;
 static const std::uint8_t FLAG_CONST = 0x02;
 static const std::uint8_t FLAG_CARRY = 0x01;
 
@@ -100,7 +97,7 @@ private:
 
   // Opcode function table
   typedef void (i8080::*OPCODE)();
-  std::array<OPCODE, INSTR_SIZE> instrtable
+  std::array<OPCODE, INSTR_SIZE> instrtable;
 
   // Opcode Functions
   void opcode_none();   // To catch unimplemented ops
@@ -311,7 +308,7 @@ private:
   void opcode_cnz();    // 0xc4
   void opcode_pushb();  // 0xc5
   void opcode_adid();   // 0xc6
-  void opcode_rst0();   // 0xc7
+  void opcode_rst();    // 0xc7
   void opcode_rz();     // 0xc8
   void opcode_ret();    // 0xc9
   void opcode_jz();     // 0xca
@@ -368,7 +365,7 @@ private:
   void opcode_rst7();   // 0xff
 
   // CPU Functions
-  const bool& getParity(std::uint16_t value);
+  bool getParity(std::uint16_t value);
   void stack_push(std::uint16_t value);
   std::uint16_t stack_pop();
 

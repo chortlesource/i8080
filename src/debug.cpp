@@ -14,11 +14,11 @@ DEALINGS IN THE SOFTWARE.
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <i8080>
+#include <i8080.hpp>
 
 // ------- i8080_DEBUG Implementation
 
-void i8080_DEBUG::initalize(const char *path) {
+void i8080_DEBUG::initialize(const char *path) {
   file = path;  // Configure our log file
   illegal = false;  // Reset our illegal catch
 }
@@ -26,8 +26,8 @@ void i8080_DEBUG::initalize(const char *path) {
 
 void i8080_DEBUG::start() {
   // Open our log file and print a header
-  OUT.open(filename, std::ofstream::out | std::ofstream::app);
-  OUT << std::endl << "################################## DEBUGGING ##################################" << std::endl
+  OUT.open(file, std::ofstream::out | std::ofstream::app);
+  OUT << std::endl << "################################## DEBUGGING ##################################" << std::endl;
 }
 
 

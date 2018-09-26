@@ -14,7 +14,7 @@ DEALINGS IN THE SOFTWARE.
 
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-#include <i8080>
+#include <i8080.hpp>
 
 // ------- Opcode Implementation
 
@@ -280,8 +280,8 @@ void i8080::opcode_rim() {
 
 void i8080::opcode_lxih() {
   // Read Memory; l = MEM[byte2] h = MEM[byte3]
-  l = READ_MEMORY(pc++);
-  h = READ_MEMORY(pc++);
+  l = MEMORY_READ(pc++);
+  h = MEMORY_READ(pc++);
 }   // 0x21
 
 
@@ -344,7 +344,7 @@ void i8080::opcode_daa() {
 
 void i8080::opcode_dadh() {
   std::uint32_t hl1 = (h << 8) + l;
-  std::uint32_t hl2 = hl;
+  std::uint32_t hl2 = hl1;
   std::uint32_t value = hl1 + hl2;
 
   h = (value & 0xFF00) >> 8;
@@ -360,8 +360,8 @@ void i8080::opcode_lhld() {
 
 
 void i8080::opcode_dclh() {
-  std::uint16_t hl = (h << 8) + l;
-  hl--;
+  std::uint16_t value = (h << 8) + l;
+  value--;
 
   h = (value & 0xFF00) >> 8;
   l = (value & 0xFF);
@@ -408,8 +408,8 @@ void i8080::opcode_sim() {
 
 
 void i8080::opcode_lxisp() {
-  std::uint16_t temp = READ_MEMORY(pc++);
-  temp = (READ_MEMORY(pc++) << 4);
+  std::uint16_t temp = MEMORY_READ(pc++);
+  temp = (MEMORY_READ(pc++) << 4);
   sp = temp;
 }  // 0x31
 
@@ -1318,7 +1318,7 @@ void i8080::opcode_anal() {
 
 
 void i8080::opcode_anam() {
-  std::uint8_t value = a & READ_MEMORY((h << 4) + l);
+  std::uint8_t value = a & MEMORY_READ((h << 4) + l);
   SET_ZERO(!value, &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_PARITY((getParity(value)), &flags);
@@ -1406,7 +1406,7 @@ void i8080::opcode_xral() {
 
 
 void i8080::opcode_xram() {
-  std::uint8_t value = a ^ READ_MEMORY((h << 4) + l);
+  std::uint8_t value = a ^ MEMORY_READ((h << 4) + l);
   SET_ZERO(!value, &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_PARITY((getParity(value)), &flags);
@@ -1495,7 +1495,7 @@ void i8080::opcode_oral() {
 
 
 void i8080::opcode_oram() {
-  std::uint8_t value = a | READ_MEMORY((h << 4) + l);
+  std::uint8_t value = a | MEMORY_READ((h << 4) + l);
   SET_ZERO(!value, &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_PARITY((getParity(value)), &flags);
@@ -1584,7 +1584,7 @@ void i8080::opcode_cmpl() {
 
 void i8080::opcode_cmpm() {
   // Subtr mem from a for comparison
-  std::uint16_t value = a - READ_MEMORY((h << 4) + l);
+  std::uint16_t value = a - MEMORY_READ((h << 4) + l);
   SET_ZERO(!value, &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_PARITY((getParity(value)), &flags);
