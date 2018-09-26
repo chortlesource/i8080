@@ -27,7 +27,11 @@ void i8080_DEBUG::initialize(const char *path) {
 void i8080_DEBUG::start() {
   // Open our log file and print a header
   OUT.open(file, std::ofstream::out | std::ofstream::app);
-  OUT << std::endl << "################################## DEBUGGING ##################################" << std::endl;
+
+  for(int i = 0; i < 50; i++) OUT << "#";
+  OUT << " DEBUGGING ";
+  for(int i = 0; i < 51; i++) OUT << "#";   // Inequality makes me unhappy
+  OUT << std::endl;
 }
 
 
@@ -68,6 +72,8 @@ void i8080_DEBUG::appendMemory(std::uint16_t addr, uint8_t value) {
 
 void i8080_DEBUG::stop() {
   // Print out our footer and close the log file
-  OUT << "\n###############################################################################" << std::endl << std::endl;
+  for(int i = 0; i < 112; i++)
+    OUT << "#";
+  OUT << std::endl << std::endl;
   OUT.close();
 }

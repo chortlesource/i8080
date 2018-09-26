@@ -128,11 +128,11 @@ void i8080_MEMORY::loadFile(const char *path) {
     input.read(buffer, fsize);
 
     for (unsigned int i = 0; i < fsize; i++) {
-      MEMORY[0x600 + i] = static_cast<uint8_t>(buffer[i]);
+      MEMORY[0x100 + i] = static_cast<uint8_t>(buffer[i]);
     }
     delete [] buffer;
   }
-  std::cout << "[CPU] FILE LOADED" << std::endl;
+  std::cout << "[i8080] FILE LOADED" << std::endl;
 }
 
 

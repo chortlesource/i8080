@@ -364,7 +364,7 @@ void i8080::Run(std::uint32_t num_cycles) {
   std::uint8_t opcode;
   OPCODE instr;
 
-  pc = 0;
+  pc = 0x100;
 
   // Start our debugging session
   if(DEBUG.isEnabled())
@@ -429,25 +429,25 @@ void i8080::Debug(const bool& value, const char *path) {
 
 int main(int argc, const char *argv[]) {
   // Initialize the CPU Structure
-  std::cout << std::endl << "[CPU]\tInitializing CPU" << std::endl;
+  std::cout << std::endl << "[i8080]\tInitializing CPU" << std::endl;
   i8080 cpu;
 
   // Read the relevant assembled source
-  std::cout << "[CPU]\tReading Binary File" << std::endl;
+  std::cout << "[i8080]\tReading Binary File" << std::endl;
   cpu.Open(argv[1]);
 
   // Configure the Debug variables
-  std::cout << "[CPU]\tConfiguring Debug Settings" << std::endl;
+  std::cout << "[i8080]\tConfiguring Debug Settings" << std::endl;
   if(argc > 1)
     cpu.Debug(true, argv[2]);
   else
     cpu.Debug(false, "NONE");
 
   // Execute the the source
-  std::cout << "[CPU]\tExecuting operations" << std::endl;
+  std::cout << "[i8080]\tExecuting operations" << std::endl;
   cpu.Run(10000);
 
   // Finalize and finish
-  std::cout << "[CPU]\tExit Program" << std::endl << std::endl;
+  std::cout << "[i8080]\tExit Program" << std::endl << std::endl;
   return 0;
 }
