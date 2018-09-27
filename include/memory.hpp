@@ -51,6 +51,7 @@ public:
   void loadHexFile(const char *path);
 
   void reset();
+  
 
 };
 

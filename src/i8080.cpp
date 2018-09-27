@@ -27,6 +27,9 @@ bool i8080::getParity(std::uint16_t value) {
     value >>= 1;
   }
 
+  if(IS_CARRY(flags))
+    count++;
+
   // Parity is the most significant bit of count; 0 for odd 1 for even parity.
   return !(count & 0x01);
 }
