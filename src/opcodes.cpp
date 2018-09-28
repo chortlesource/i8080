@@ -1718,8 +1718,10 @@ void i8080::opcode_jmp() {
 
 
 void i8080::opcode_cnz() {
-  if(IS_ZERO(flags))
+  if(IS_ZERO(flags)){
+    pc += 2;
     return;
+  }
 
   opcode_call();
 }    // 0xc4
@@ -1782,8 +1784,10 @@ void i8080::opcode_jz() {
 
 void i8080::opcode_cz() {
   // If Zero call addr
-  if(!IS_ZERO(flags))
+  if(!IS_ZERO(flags)){
+    pc += 2;
     return;
+  }
 
   opcode_call();
 }     // 0xcc
@@ -1853,8 +1857,10 @@ void i8080::opcode_outd() {
 
 void i8080::opcode_cnc() {
   // Call if !carry
-  if(IS_CARRY(flags))
+  if(IS_CARRY(flags)){
+    pc += 2;
     return;
+  }
 
   opcode_call();
 }    // 0xd4
@@ -1912,8 +1918,10 @@ void i8080::opcode_ind() {
 
 void i8080::opcode_cc() {
   // if carry call addr
-  if(!IS_CARRY(flags))
+  if(!IS_CARRY(flags)){
+    pc += 2;
     return;
+  }
 
   opcode_call();
 }     // 0xdc
@@ -1981,8 +1989,10 @@ void i8080::opcode_xthl() {
 
 void i8080::opcode_cpo() {
   // If parity == odd call addr
-  if(IS_PARITY(flags))
+  if(IS_PARITY(flags)){
+    pc += 2;
     return;
+  }
 
   opcode_call();
 }    // 0xe4
@@ -2054,8 +2064,10 @@ void i8080::opcode_xchg() {
 
 void i8080::opcode_cpe() {
   // Call addr if parity == even
-  if(!IS_PARITY(flags))
+  if(!IS_PARITY(flags)){
+    pc += 2;
     return;
+  }
 
   opcode_call();
 }    // 0xec
@@ -2117,8 +2129,10 @@ void i8080::opcode_di() {
 
 void i8080::opcode_cp() {
   // If Positive parity CALL
-  if(!IS_PARITY(flags))
+  if(!IS_PARITY(flags)){
+    pc += 2;
     return;
+  }
 
   opcode_call();
 }     // 0xf4
@@ -2185,8 +2199,10 @@ void i8080::opcode_ei() {
 
 void i8080::opcode_cm() {
   // CALL if(is_sign)
-  if(!IS_SIGN(flags))
+  if(!IS_SIGN(flags)){
+    pc += 2;
     return;
+  }
 
   opcode_call();
 }     // 0xfc

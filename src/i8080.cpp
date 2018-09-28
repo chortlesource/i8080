@@ -334,7 +334,7 @@ i8080::i8080() {
   instrtable[0xfa] = &i8080::opcode_jm;     // 0xfa
   instrtable[0xfb] = &i8080::opcode_ei;     // 0xfb
   instrtable[0xfc] = &i8080::opcode_cm;     // 0xfc
-  instrtable[0xfd] = &i8080::opcode_cpid;   // 0xfe
+  instrtable[0xfe] = &i8080::opcode_cpid;   // 0xfe
   instrtable[0xff] = &i8080::opcode_rst7;   // 0xff
 
   Reset();
@@ -448,7 +448,7 @@ int main(int argc, const char *argv[]) {
 
   // Execute the the source
   std::cout << "[i8080]\tExecuting operations" << std::endl;
-  cpu.Run(10000);
+  cpu.Run(50000);
 
   // Finalize and finish
   std::cout << "[i8080]\tExit Program" << std::endl << std::endl;
