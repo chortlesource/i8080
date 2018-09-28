@@ -27,9 +27,9 @@ bool i8080::getParity(std::uint16_t value) {
     value >>= 1;
   }
 
-  if(IS_CARRY(flags))
+  /*if(IS_CARRY(flags))
     count++;
-
+    */
   // Parity is the most significant bit of count; 0 for odd 1 for even parity.
   return !(count & 0x01);
 }
@@ -281,11 +281,11 @@ i8080::i8080() {
   instrtable[0xc4] = &i8080::opcode_cnz;    // 0xc4
   instrtable[0xc5] = &i8080::opcode_pushb;  // 0xc5
   instrtable[0xc6] = &i8080::opcode_adid;   // 0xc6
-  instrtable[0xc7] = &i8080::opcode_rst;   // 0xc7
+  instrtable[0xc7] = &i8080::opcode_rst;    // 0xc7
   instrtable[0xc8] = &i8080::opcode_rz;     // 0xc8
   instrtable[0xc9] = &i8080::opcode_ret;    // 0xc9
   instrtable[0xca] = &i8080::opcode_jz;     // 0xca
-  instrtable[0xcb] = &i8080::opcode_cz;     // 0xcc
+  instrtable[0xcc] = &i8080::opcode_cz;     // 0xcc
   instrtable[0xcd] = &i8080::opcode_call;   // 0xcd
   instrtable[0xce] = &i8080::opcode_acid;   // 0xce
   instrtable[0xcf] = &i8080::opcode_rst1;   // 0xcf
@@ -448,7 +448,7 @@ int main(int argc, const char *argv[]) {
 
   // Execute the the source
   std::cout << "[i8080]\tExecuting operations" << std::endl;
-  cpu.Run(50000);
+  cpu.Run(10000);
 
   // Finalize and finish
   std::cout << "[i8080]\tExit Program" << std::endl << std::endl;

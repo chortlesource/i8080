@@ -51,10 +51,10 @@ void i8080::opcode_inxb() {
 void i8080::opcode_inrb() {
   // Use uint16_t to capture the carry
   std::uint16_t value = b + 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   b = value;
 }   // 0x04
@@ -63,10 +63,10 @@ void i8080::opcode_inrb() {
 void i8080::opcode_dcrb() {
   // Use uint16_t to capture the carry
   std::uint16_t value = b - 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   b = value;
 }   // 0x05
@@ -118,7 +118,7 @@ void i8080::opcode_dcxb() {
 void i8080::opcode_inrc() {
   // Use uint16_t to capture the carry
   std::uint16_t value = c + 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_PARITY((getParity(value)), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
@@ -129,10 +129,10 @@ void i8080::opcode_inrc() {
 void i8080::opcode_dcrc() {
   // Use uint16_t to capture the carry
   std::uint16_t value = c - 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   c = value;
 }   // 0x0d
@@ -180,10 +180,10 @@ void i8080::opcode_inxd() {
 void i8080::opcode_inrd() {
   // Use uint16_t to capture the carry
   std::uint16_t value = d + 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   d = value;
 }   // 0x14
@@ -192,10 +192,10 @@ void i8080::opcode_inrd() {
 void i8080::opcode_dcrd() {
   // Use uint16_t to capture the carry
   std::uint16_t value = d - 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   d = value;
 }   // 0x15
@@ -242,10 +242,10 @@ void i8080::opcode_dcxd() {
 void i8080::opcode_inre() {
   // Use uint16_t to capture the carry
   std::uint16_t value = e + 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   e = value;
 }   // 0x1c
@@ -254,10 +254,10 @@ void i8080::opcode_inre() {
 void i8080::opcode_dcre() {
   // Use uint16_t to capture the carry
   std::uint16_t value = e - 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   e = value;
 }   // 0x1d
@@ -308,10 +308,10 @@ void i8080::opcode_inxh() {
 void i8080::opcode_inrh() {
   // Use uint16_t to capture the carry
   std::uint16_t value = h + 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   h = value;
 }   // 0x24
@@ -320,10 +320,10 @@ void i8080::opcode_inrh() {
 void i8080::opcode_dcrh() {
   // Use uint16_t to capture the carry
   std::uint16_t value = h - 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   h = value;
 }   // 0x25
@@ -380,10 +380,10 @@ void i8080::opcode_dclh() {
 void i8080::opcode_inrl() {
   // Use uint16_t to capture the carry
   std::uint16_t value = l + 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   l = value;
 }   // 0x2c
@@ -392,10 +392,10 @@ void i8080::opcode_inrl() {
 void i8080::opcode_dcrl() {
   // Use uint16_t to capture the carry
   std::uint16_t value = l - 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   l = value;
 }   // 0x2d
@@ -419,9 +419,10 @@ void i8080::opcode_sim() {
 
 
 void i8080::opcode_lxisp() {
-  std::uint16_t temp = MEMORY_READ(pc++);
-  temp = (MEMORY_READ(pc++) << 4);
-  sp = temp;
+  std::uint16_t value = MEMORY_READ(pc);
+  value += (MEMORY_READ(pc + 1) << 8);
+  sp = value;
+  pc += 2;
 }  // 0x31
 
 
@@ -443,10 +444,10 @@ void i8080::opcode_inrm() {
 
   // Use uint16_t to capture the carry
   std::uint16_t value = mem + 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   // Write memory back to address
   MEMORY_WRITE((h << 8) + l, value & 0xFF);
@@ -459,10 +460,10 @@ void i8080::opcode_dcrm() {
 
   // Use uint16_t to capture the carry
   std::uint16_t value = mem - 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   // Write memory back to address
   MEMORY_WRITE((h << 8) + l, value & 0xFF);
@@ -508,10 +509,10 @@ void i8080::opcode_dcxsp() {
 void i8080::opcode_inra() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x3c
@@ -520,10 +521,10 @@ void i8080::opcode_inra() {
 void i8080::opcode_dcra() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - 1;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x3d
@@ -869,11 +870,11 @@ void i8080::opcode_movaa() {
 void i8080::opcode_addb() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + b;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x80
@@ -882,11 +883,11 @@ void i8080::opcode_addb() {
 void i8080::opcode_addc() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + c;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x81
@@ -895,11 +896,11 @@ void i8080::opcode_addc() {
 void i8080::opcode_addd() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + d;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x82
@@ -908,11 +909,11 @@ void i8080::opcode_addd() {
 void i8080::opcode_adde() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + e;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x83
@@ -921,11 +922,11 @@ void i8080::opcode_adde() {
 void i8080::opcode_addh() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + h;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x84
@@ -934,11 +935,11 @@ void i8080::opcode_addh() {
 void i8080::opcode_addl() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + l;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x85
@@ -950,11 +951,11 @@ void i8080::opcode_addm() {
 
   // Use uint16_t to capture the carry
   std::uint16_t value = a + mem;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x86
@@ -963,11 +964,11 @@ void i8080::opcode_addm() {
 void i8080::opcode_adda() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + a;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x87
@@ -976,11 +977,11 @@ void i8080::opcode_adda() {
 void i8080::opcode_adcb() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + b + IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x88
@@ -989,11 +990,11 @@ void i8080::opcode_adcb() {
 void i8080::opcode_adcc() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + c + IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x89
@@ -1002,11 +1003,11 @@ void i8080::opcode_adcc() {
 void i8080::opcode_adcd() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + d + IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x8a
@@ -1015,11 +1016,11 @@ void i8080::opcode_adcd() {
 void i8080::opcode_adce() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + e + IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x8b
@@ -1028,11 +1029,11 @@ void i8080::opcode_adce() {
 void i8080::opcode_adch() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + h + IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x8c
@@ -1041,11 +1042,11 @@ void i8080::opcode_adch() {
 void i8080::opcode_adcl() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + l + IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x8d
@@ -1057,11 +1058,11 @@ void i8080::opcode_adcm() {
 
   // Use uint16_t to capture the carry
   std::uint16_t value = a + mem + IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x8e
@@ -1070,11 +1071,11 @@ void i8080::opcode_adcm() {
 void i8080::opcode_adca() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + a + IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x8f
@@ -1084,11 +1085,11 @@ void i8080::opcode_adca() {
 void i8080::opcode_subb() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - b;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x90
@@ -1097,11 +1098,11 @@ void i8080::opcode_subb() {
 void i8080::opcode_subc() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - c;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x91
@@ -1110,11 +1111,11 @@ void i8080::opcode_subc() {
 void i8080::opcode_subd() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - d;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x92
@@ -1123,11 +1124,11 @@ void i8080::opcode_subd() {
 void i8080::opcode_sube() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - e;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x93
@@ -1136,11 +1137,11 @@ void i8080::opcode_sube() {
 void i8080::opcode_subh() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - h;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x94
@@ -1149,11 +1150,11 @@ void i8080::opcode_subh() {
 void i8080::opcode_subl() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - l;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x95
@@ -1165,11 +1166,11 @@ void i8080::opcode_subm() {
 
   // Use uint16_t to capture the carry
   std::uint16_t value = a - mem;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x96
@@ -1178,11 +1179,11 @@ void i8080::opcode_subm() {
 void i8080::opcode_suba() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - a;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x97
@@ -1191,11 +1192,11 @@ void i8080::opcode_suba() {
 void i8080::opcode_sbbb() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - b - IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x98
@@ -1204,11 +1205,11 @@ void i8080::opcode_sbbb() {
 void i8080::opcode_sbbc() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - c - IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x99
@@ -1217,11 +1218,11 @@ void i8080::opcode_sbbc() {
 void i8080::opcode_sbbd() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - d - IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x9a
@@ -1230,11 +1231,11 @@ void i8080::opcode_sbbd() {
 void i8080::opcode_sbbe() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - e - IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x9b
@@ -1243,11 +1244,11 @@ void i8080::opcode_sbbe() {
 void i8080::opcode_sbbh() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - h - IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x9c
@@ -1256,11 +1257,11 @@ void i8080::opcode_sbbh() {
 void i8080::opcode_sbbl() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - l - IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x9d
@@ -1272,11 +1273,11 @@ void i8080::opcode_sbbm() {
 
   // Use uint16_t to capture the carry
   std::uint16_t value = a - mem - IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x9e
@@ -1285,11 +1286,11 @@ void i8080::opcode_sbbm() {
 void i8080::opcode_sbba() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a - a - IS_CARRY(flags);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0x9f
@@ -1298,11 +1299,12 @@ void i8080::opcode_sbba() {
 
 void i8080::opcode_anab() {
   std::uint8_t value = a & b;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xa0
@@ -1310,11 +1312,12 @@ void i8080::opcode_anab() {
 
 void i8080::opcode_anac() {
   std::uint8_t value = a & c;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xa1
@@ -1322,11 +1325,12 @@ void i8080::opcode_anac() {
 
 void i8080::opcode_anad() {
   std::uint8_t value = a & d;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xa2
@@ -1334,11 +1338,12 @@ void i8080::opcode_anad() {
 
 void i8080::opcode_anae() {
   std::uint8_t value = a & e;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xa3
@@ -1346,11 +1351,12 @@ void i8080::opcode_anae() {
 
 void i8080::opcode_anah() {
   std::uint8_t value = a & h;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xa4
@@ -1358,11 +1364,12 @@ void i8080::opcode_anah() {
 
 void i8080::opcode_anal() {
   std::uint8_t value = a & l;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xa5
@@ -1370,11 +1377,12 @@ void i8080::opcode_anal() {
 
 void i8080::opcode_anam() {
   std::uint8_t value = a & MEMORY_READ((h << 4) + l);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xa6
@@ -1382,11 +1390,12 @@ void i8080::opcode_anam() {
 
 void i8080::opcode_anaa() {
   std::uint8_t value = a & a;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xa7
@@ -1394,11 +1403,12 @@ void i8080::opcode_anaa() {
 
 void i8080::opcode_xrab() {
   std::uint8_t value = a ^ b;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xa8
@@ -1406,11 +1416,12 @@ void i8080::opcode_xrab() {
 
 void i8080::opcode_xrac() {
   std::uint8_t value = a ^ c;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xa9
@@ -1418,11 +1429,12 @@ void i8080::opcode_xrac() {
 
 void i8080::opcode_xrad() {
   std::uint8_t value = a ^ d;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xaa
@@ -1430,11 +1442,12 @@ void i8080::opcode_xrad() {
 
 void i8080::opcode_xrae() {
   std::uint8_t value = a ^ e;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xab
@@ -1442,11 +1455,12 @@ void i8080::opcode_xrae() {
 
 void i8080::opcode_xrah() {
   std::uint8_t value = a ^ h;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xac
@@ -1454,11 +1468,12 @@ void i8080::opcode_xrah() {
 
 void i8080::opcode_xral() {
   std::uint8_t value = a ^ l;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xad
@@ -1466,11 +1481,12 @@ void i8080::opcode_xral() {
 
 void i8080::opcode_xram() {
   std::uint8_t value = a ^ MEMORY_READ((h << 4) + l);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xae
@@ -1478,11 +1494,12 @@ void i8080::opcode_xram() {
 
 void i8080::opcode_xraa() {
   std::uint8_t value = a ^ a;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xaf
@@ -1491,11 +1508,12 @@ void i8080::opcode_xraa() {
 
 void i8080::opcode_orab() {
   std::uint8_t value = a | b;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xb0
@@ -1503,11 +1521,12 @@ void i8080::opcode_orab() {
 
 void i8080::opcode_orac() {
   std::uint8_t value = a | c;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xb1
@@ -1515,11 +1534,12 @@ void i8080::opcode_orac() {
 
 void i8080::opcode_orad() {
   std::uint8_t value = a | d;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xb2
@@ -1527,11 +1547,12 @@ void i8080::opcode_orad() {
 
 void i8080::opcode_orae() {
   std::uint8_t value = a | e;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xb3
@@ -1539,11 +1560,12 @@ void i8080::opcode_orae() {
 
 void i8080::opcode_orah() {
   std::uint8_t value = a | h;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xb4
@@ -1551,11 +1573,12 @@ void i8080::opcode_orah() {
 
 void i8080::opcode_oral() {
   std::uint8_t value = a | l;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xb5
@@ -1563,11 +1586,12 @@ void i8080::opcode_oral() {
 
 void i8080::opcode_oram() {
   std::uint8_t value = a | MEMORY_READ((h << 4) + l);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xb6
@@ -1575,11 +1599,12 @@ void i8080::opcode_oram() {
 
 void i8080::opcode_oraa() {
   std::uint8_t value = a | a;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xb7
@@ -1588,11 +1613,11 @@ void i8080::opcode_oraa() {
 void i8080::opcode_cmpb() {
   // Subtr b from a for comparison
   std::uint16_t value = a - b;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
 }   // 0xb8
 
@@ -1600,11 +1625,11 @@ void i8080::opcode_cmpb() {
 void i8080::opcode_cmpc() {
   // Subtr c from a for comparison
   std::uint16_t value = a - c;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
 }   // 0xb9
 
@@ -1612,11 +1637,11 @@ void i8080::opcode_cmpc() {
 void i8080::opcode_cmpd() {
   // Subtr d from a for comparison
   std::uint16_t value = a - d;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
 }   // 0xba
 
@@ -1624,11 +1649,11 @@ void i8080::opcode_cmpd() {
 void i8080::opcode_cmpe() {
   // Subtr e from a for comparison
   std::uint16_t value = a - e;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
 }   // 0xbb
 
@@ -1636,11 +1661,11 @@ void i8080::opcode_cmpe() {
 void i8080::opcode_cmph() {
   // Subtr h from a for comparison
   std::uint16_t value = a - h;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
 }   // 0xbc
 
@@ -1648,23 +1673,24 @@ void i8080::opcode_cmph() {
 void i8080::opcode_cmpl() {
   // Subtr l from a for comparison
   std::uint16_t value = a - l;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
 }   // 0xbd
 
 
 void i8080::opcode_cmpm() {
   // Subtr mem from a for comparison
-  std::uint16_t value = a - MEMORY_READ((h << 4) + l);
-  SET_ZERO(!value, &flags);
+  std::uint16_t operand = MEMORY_READ((h << 4) + l);
+  std::uint16_t value = a - operand;
+  SET_ZERO(a == operand, &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY(a < operand, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
 }   // 0xbe
 
@@ -1672,11 +1698,11 @@ void i8080::opcode_cmpm() {
 void i8080::opcode_cmpa() {
   // Subtr a from a for comparison
   std::uint16_t value = a - a;
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
 }   // 0xbf
 
@@ -1737,11 +1763,11 @@ void i8080::opcode_pushb() {
 void i8080::opcode_adid() {
   // Use uint16_t to capture the carry
   std::uint16_t value = a + MEMORY_READ(pc);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
   SET_CARRY(value > 0xFF, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
   pc++;
@@ -1797,21 +1823,22 @@ void i8080::opcode_call() {
   // Write addr to memory and set pc = addr
   MEMORY_WRITE(sp - 1, (pc >> 8) & 0xFF);
   MEMORY_WRITE(sp - 2, pc & 0xFF);
-  sp += 2;
+  sp -= 2;
   pc = (MEMORY_READ(pc + 1) << 8) + MEMORY_READ(pc);
 }   // 0xcd
 
 
 void i8080::opcode_acid() {
   // Add a + data + cy
-  std::uint16_t value = (a + MEMORY_READ(pc++)) + (flags & FLAG_CARRY);
-  SET_ZERO(!value, &flags);
+  std::uint16_t value = (a + MEMORY_READ(pc)) + (flags & FLAG_CARRY);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
+  pc++;
 }   // 0xce
 
 
@@ -1874,14 +1901,15 @@ void i8080::opcode_pushd() {
 
 void i8080::opcode_suid() {
   // Subtract byte2 from a
-  std::uint16_t value = a - MEMORY_READ(pc++);
-  SET_ZERO(!value, &flags);
+  std::uint16_t value = a - MEMORY_READ(pc);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
+  pc++;
 }   // 0xd6
 
 
@@ -1930,11 +1958,11 @@ void i8080::opcode_cc() {
 void i8080::opcode_sbid() {
   // Subtract byte2 and borrow from a
   std::uint16_t value = (a - MEMORY_READ(pc++)) - (flags & FLAG_CARRY);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
   a = value;
 }   // 0xde
@@ -2007,14 +2035,16 @@ void i8080::opcode_pushh() {
 
 void i8080::opcode_anid() {
   // And with MEM[byte2]
-  std::uint8_t value = a & MEMORY_READ(pc++);
-  SET_ZERO(!value, &flags);
+  std::uint8_t value = a & MEMORY_READ(pc);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
+  pc++;
 }   // 0xe6
 
 
@@ -2076,12 +2106,12 @@ void i8080::opcode_cpe() {
 void i8080::opcode_xrid() {
   // Exclusive or with MEM[byte2]
   std::uint8_t value = a ^ MEMORY_READ(pc++);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
-
   a = value;
 }   // 0xee
 
@@ -2149,11 +2179,12 @@ void i8080::opcode_pushpsw() {
 void i8080::opcode_orid() {
   // A = A | Data
   std::uint8_t value = a | MEMORY_READ(pc++);
-  SET_ZERO(!value, &flags);
+  SET_ZERO(!(value & 0xFF), &flags);
   SET_SIGN(value & 0x80, &flags);
+  SET_CARRY((value > 0xFF) || (value < 0), &flags);   // For handling parity only remove later
+  SET_PARITY(getParity(value & 0xFF), &flags);
   SET_CARRY(false, &flags);
   SET_AUX(false, &flags);
-  SET_PARITY(getParity(value), &flags);
 
   a = value;
 }   // 0xf6
@@ -2210,13 +2241,15 @@ void i8080::opcode_cm() {
 
 void i8080::opcode_cpid() {
   // Compare data with accumulator
-  std::uint8_t value = a - MEMORY_READ(pc++);
-  SET_ZERO(!value, &flags);
+  std::uint16_t operand = MEMORY_READ(pc);
+  std::uint16_t value = a - operand;
+  SET_ZERO(a == operand, &flags);
   SET_SIGN(value & 0x80, &flags);
-  SET_CARRY(a < value, &flags);
+  SET_CARRY(a < operand, &flags);
   SET_AUX((a & 0x0F) > (value & 0x000F), &flags);
-  SET_PARITY(getParity(value), &flags);
+  SET_PARITY(getParity(value & 0xFF), &flags);
 
+  pc++;
 }   // 0xfe
 
 

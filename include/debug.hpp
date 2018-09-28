@@ -33,7 +33,7 @@ static const char *DEBUG_OPSTRING[256] {
   "SUBB", "SUBC", "SUBD", "SUBE", "SUBH", "SUBL", "SUBM", "SUBA", "SBBB", "SBBC", "SBBD", "SBBE", "SBBH", "SBBL", "SBBM", "SBBA",
   "ANAB", "ANAC", "ANAD", "ANAE", "ANAH", "ANAL", "ANAM", "ANAA", "XRAB", "XRAC", "XRAD", "ARAE", "XRAH", "XRAL", "XRAM", "XRAA",
   "ORAB", "ORAC", "ORAD", "ORAE", "ORAH", "ORAL", "ORAM", "ORAA", "CMPB", "CMPC", "CMPD", "CMPE", "CMPH", "CMPL", "CMPM", "CMPA",
-  "RNX", "POPB", "JNZ", "JMP", "CNZ", "PUSHB", "ADID", "RST0", "RZ", "RET", "JZ", "####", "CZ", "CALL", "ACID", "RST1",
+  "RNZ", "POPB", "JNZ", "JMP", "CNZ", "PUSHB", "ADID", "RST0", "RZ", "RET", "JZ", "####", "CZ", "CALL", "ACID", "RST1",
   "RNC", "POPD", "JNC", "OUTD", "CNC", "PUSHD", "SUID", "RST2", "RC", "####", "JC", "IND", "CC", "####", "SBID", "RST3",
   "RPO", "POPH", "JPO", "XTHL", "CPO", "PUSHH", "ANID", "RST4", "RPE", "PCHL", "JPE", "XCHG", "CPE", "####", "XRID", "RST5",
   "RP", "POPP", "JP", "DI", "CP", "PUSHP", "ORID", "RST6", "RM", "SPHL", "JM", "EL", "CM", "####", "CPID", "RST7"
