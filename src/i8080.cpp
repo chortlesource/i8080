@@ -64,6 +64,7 @@ std::uint8_t i8080::MEMORY_READ(std::uint16_t addr) {
 
 void i8080::MEMORY_WRITE(std::uint16_t addr, std::uint8_t value) {
   // Store 'value' in memory address 'addr'
+  DEBUG.appendMemoryW(addr, value);
   MEMORY.WRITE(addr, value);
 }
 
@@ -374,16 +375,17 @@ void i8080::Run(std::uint32_t num_cycles) {
     DEBUG.start();
 
   while(cycles_start + num_cycles > cycles && !none_opcode && !halt) {
+
     opcode = MEMORY_READ(pc++);   // Fetch
     instr = instrtable[opcode];   // Decode
-
-    exec(instr);                  // Execute
-
-    cycles++;
 
     // Append to our file the CPU status
     if(DEBUG.isEnabled())
       DEBUG.append(opcode, a, b, c, d, e, h, l, flags, pc, sp);
+
+    exec(instr);                  // Execute
+
+    cycles++;
   }
 
   // End debugging session
@@ -433,24 +435,27 @@ void i8080::Debug(const bool& value, const char *path) {
 int main(int argc, const char *argv[]) {
   // Initialize the CPU Structure
   std::cout << std::endl << "[i8080]\tInitializing CPU" << std::endl;
-  i8080 cpu;
+  i8080 *cpu = new i8080();
 
   // Read the relevant assembled source
   std::cout << "[i8080]\tReading Binary File" << std::endl;
-  cpu.Open(argv[1]);
+  cpu->Open("cpudiag.com");
 
   // Configure the Debug variables
   std::cout << "[i8080]\tConfiguring Debug Settings" << std::endl;
+  cpu->Debug(true, "debug.log");
+/*
   if(argc > 1)
     cpu.Debug(true, argv[2]);
   else
     cpu.Debug(false, "NONE");
-
+*/
   // Execute the the source
   std::cout << "[i8080]\tExecuting operations" << std::endl;
-  cpu.Run(10000);
+  cpu->Run(5000);
 
   // Finalize and finish
+  delete cpu;
   std::cout << "[i8080]\tExit Program" << std::endl << std::endl;
   return 0;
 }

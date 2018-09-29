@@ -22,7 +22,7 @@ unsigned int i8080_MEMORY::hextoint(std::string line) {
   int rvalue = 0;
 
   // Loop through the length of line
-  for(int i = 0; i < line.length(); i++) {
+  for(unsigned int i = 0; i < line.length(); i++) {
     int ch = tolower(line.at(i)); // obtain first digit as int
 
     unsigned int value = 0;
@@ -133,6 +133,7 @@ void i8080_MEMORY::loadFile(const char *path) {
     delete [] buffer;
   }
   std::cout << "[i8080] FILE LOADED" << std::endl;
+
 }
 
 

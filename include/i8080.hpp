@@ -54,12 +54,12 @@ inline bool IS_AUX(std::uint8_t value) { return value & FLAG_AUX; }
 inline bool IS_PARITY(std::uint8_t value) { return value & FLAG_PARITY; }
 inline bool IS_CARRY(std::uint8_t value) { return value & FLAG_CARRY; }
 
-inline bool SET_SIGN(bool value, std::uint8_t *flags) { value ? (*flags |= FLAG_SIGN) : (*flags &= (~FLAG_SIGN)); }
-inline bool SET_ZERO(bool value, std::uint8_t *flags) { value ? (*flags |= FLAG_ZERO) : (*flags &= (~FLAG_ZERO)); }
-inline bool SET_AUX(bool value, std::uint8_t *flags) { value ? (*flags |= FLAG_AUX) : (*flags &= (~FLAG_AUX)); }
-inline bool SET_PARITY(bool value, std::uint8_t *flags) { value ? (*flags |= FLAG_PARITY) : (*flags &= (~FLAG_PARITY)); }
-inline bool SET_CONST(bool value, std::uint8_t *flags) { value ? (*flags |= FLAG_CONST) : (*flags &= (~FLAG_CONST)); }
-inline bool SET_CARRY(bool value, std::uint8_t *flags) { value ? (*flags |= FLAG_CARRY) : (*flags &= (~FLAG_CARRY)); }
+inline bool SET_SIGN(bool value, std::uint8_t *flags) { return value ? (*flags |= FLAG_SIGN) : (*flags &= (~FLAG_SIGN)); }
+inline bool SET_ZERO(bool value, std::uint8_t *flags) { return value ? (*flags |= FLAG_ZERO) : (*flags &= (~FLAG_ZERO)); }
+inline bool SET_AUX(bool value, std::uint8_t *flags) { return value ? (*flags |= FLAG_AUX) : (*flags &= (~FLAG_AUX)); }
+inline bool SET_PARITY(bool value, std::uint8_t *flags) { return value ? (*flags |= FLAG_PARITY) : (*flags &= (~FLAG_PARITY)); }
+inline bool SET_CONST(bool value, std::uint8_t *flags) { return value ? (*flags |= FLAG_CONST) : (*flags &= (~FLAG_CONST)); }
+inline bool SET_CARRY(bool value, std::uint8_t *flags) { return value ? (*flags |= FLAG_CARRY) : (*flags &= (~FLAG_CARRY)); }
 
 // ------- i8080 Class
 

@@ -70,6 +70,18 @@ void i8080_DEBUG::appendMemory(std::uint16_t addr, uint8_t value) {
 }
 
 
+void i8080_DEBUG::appendMemoryW(std::uint16_t addr, uint8_t value) {
+  if(illegal || !enabled)
+    return;
+
+  if(OUT.is_open()) {
+    // Print output from the memor read instruction
+    OUT << "| MEMORY WRITE: 0x" << std::hex << std::setw(4) << unsigned(addr) <<
+    " | WROTE: 0x" << std::hex << std::setw(2) << unsigned(value) << std::endl;
+  }
+}
+
+
 void i8080_DEBUG::stop() {
   // Print out our footer and close the log file
   for(int i = 0; i < 112; i++)
