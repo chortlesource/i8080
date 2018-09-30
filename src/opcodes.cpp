@@ -359,7 +359,7 @@ void i8080::opcode_dcrh() {
 
 void i8080::opcode_mvih() {
   // Read Memory; h = MEM[byte2]
-  h = MEMORY_READ(pc);
+  h = MEMORY_READ(pc) & 0xFF;
   pc+= 1;
 }   // 0x26
 
@@ -437,7 +437,7 @@ void i8080::opcode_dcrl() {
 
 void i8080::opcode_mvil() {
   // Read Memory; l = MEM[byte2]
-  l = MEMORY_READ(pc);
+  l = MEMORY_READ(pc) & 0xFF;
   pc+= 1;
 }   // 0x2e
 

@@ -435,15 +435,15 @@ void i8080::Debug(const bool& value, const char *path) {
 int main(int argc, const char *argv[]) {
   // Initialize the CPU Structure
   std::cout << std::endl << "[i8080]\tInitializing CPU" << std::endl;
-  i8080 *cpu = new i8080();
+  i8080 cpu;
 
   // Read the relevant assembled source
   std::cout << "[i8080]\tReading Binary File" << std::endl;
-  cpu->Open("cpudiag.com");
+  cpu.Open("cpudiag.com");
 
   // Configure the Debug variables
   std::cout << "[i8080]\tConfiguring Debug Settings" << std::endl;
-  cpu->Debug(true, "debug.log");
+  cpu.Debug(true, "debug.log");
 /*
   if(argc > 1)
     cpu.Debug(true, argv[2]);
@@ -452,10 +452,9 @@ int main(int argc, const char *argv[]) {
 */
   // Execute the the source
   std::cout << "[i8080]\tExecuting operations" << std::endl;
-  cpu->Run(5000);
+  cpu.Run(5000);
 
   // Finalize and finish
-  delete cpu;
   std::cout << "[i8080]\tExit Program" << std::endl << std::endl;
   return 0;
 }
