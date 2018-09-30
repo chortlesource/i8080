@@ -49,9 +49,10 @@ public:
   bool loadLine(std::string line);
   void loadFile(const char *path);
   void loadHexFile(const char *path);
+  void set(const int& addr, const int& value) { MEMORY[addr] = value; }
 
   void reset();
-  
+
 
 };
 

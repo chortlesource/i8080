@@ -85,13 +85,11 @@ void i8080::opcode_mvib() {
 
 void i8080::opcode_rlc() {
   // Move bits << 1; set bit 0 && carry if 7 was set
-  std::uint8_t temp = a << 1;
+  std::uint8_t value = a << 1;
+  SET_CARRY(a & 0x80, &flags);
+  value |= (a >> 7);
 
-  if(a & 0x80) {
-    SET_CARRY(true, &flags);
-    temp |= 0x01;
-  }
-  a = temp;
+  a = value;
 }    // 0x07
 
 
@@ -224,11 +222,11 @@ void i8080::opcode_mvid() {
 
 void i8080::opcode_ral() {
   // Move bits a << 1; set bit 0 as cy && cy as bit 7
-  std::uint8_t temp = a << 1;
+  std::uint8_t value = a << 1;
+  value |= (flags & FLAG_CARRY);
+  SET_CARRY((a & 0x80), &flags);
 
-  temp |= (flags & FLAG_CARRY);
-  SET_CARRY((flags & (a >> 7)), &flags);
-  a = temp;
+  a = value;
 }    // 0x17
 
 
@@ -291,11 +289,11 @@ void i8080::opcode_mvie() {
 
 void i8080::opcode_rar() {
   // Move bits a >> 1; set bit 7 as prev bit 7 && cy as prev bit 0
-  std::uint8_t temp = a >> 1;
+  std::uint8_t value = a >> 1;
+  value |= ((flags & FLAG_CARRY) << 7);
+  SET_CARRY((a & 0x01), &flags);
 
-  temp |= (a & 0x80);
-  SET_CARRY(a & 0x01, &flags);
-  a = temp;
+  a = value;
 }    // 0x1f
 
 
@@ -366,14 +364,14 @@ void i8080::opcode_mvih() {
 
 void i8080::opcode_daa() {
   // If the carry bit is set or if the value of bits 0-3 exceed 9 += 0x06
-  if((a & 0x0F) > 9 || IS_CARRY(flags)) {
-    std::uint16_t value = a + 0x06;
-    SET_CARRY((a & 0x08) > (value & 0x08), &flags);
+  if((a & 0x0F) > 9 || IS_AUX(flags)) {
+    std::uint16_t value = a + 6;
+    SET_AUX((a & 8) > (value & 8), &flags);
     a = value & 0xFF;
   }
 
   if((a >> 4) > 9 || IS_CARRY(flags)) {
-    std::uint16_t value = a + 0x60;
+    std::uint16_t value = a + (6 << 4);
     SET_CARRY((a & 0x80) > (value & 0x80), &flags);
     a = value & 0xFF;
   }
@@ -2216,8 +2214,8 @@ void i8080::opcode_cp() {
 
 void i8080::opcode_pushpsw() {
   // Write flags and accumulator to memory
-  MEMORY_WRITE(MEMORY_READ(sp - 2), flags);
-  MEMORY_WRITE(MEMORY_READ(sp - 1), a);
+  MEMORY_WRITE(sp - 2, flags);
+  MEMORY_WRITE(sp - 1, a);
   sp -= 2;
 }// 0xf5
 

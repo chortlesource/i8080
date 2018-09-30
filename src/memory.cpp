@@ -1,6 +1,6 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
-memory - memory.hpp
+memory - memory.cpp
 
 Copyright (c) 2018 Christopher M. Short
 
@@ -133,7 +133,6 @@ void i8080_MEMORY::loadFile(const char *path) {
     delete [] buffer;
   }
   std::cout << "[i8080] FILE LOADED" << std::endl;
-
 }
 
 

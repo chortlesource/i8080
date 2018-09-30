@@ -23,5 +23,9 @@ add_subdirectory(${I8080_SRC})
 ## I8080 EXECUTABLE
 add_executable(i8080 ${I8080_SRC})
 
+## Copy game assets over
+add_custom_command(TARGET i8080 POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory ${CMAKE_SOURCE_DIR}/test/ $<TARGET_FILE_DIR:i8080>/test/)
+
+
 ## I8080 FLAGS
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Wall -DDEBUG_BUILD")

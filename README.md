@@ -1,47 +1,40 @@
-## i8080 Emulator in C++
+# Intel 8080 Emulator in C++
+A Simple C++ implementation of the classic intel 8080 cpu with decimal arithmetic. At this point the cpu is complete (unimplemented codes below) and successfully passes the cpudiag test from Microcosm Associates found [here](http://www.emulator101.com/files/cpudiag.asm) and compiled using this [javascript assembler](http://sensi.org/~svo/i8080/).
 
-A Simple C++ implementation of the classic intel 8080 cpu. At this point completed but pending further testing with the cpudiag test from Microcosm Associates available [here](http://www.emulator101.com/files/cpudiag.asm) and compiled using this [javascript assembler](http://sensi.org/~svo/i8080/).
+## Dependencies
+- C++11
+- cmake >= 3.0
 
-### Usage
-Assuming your in the i8080 folder you should just
+## Usage
+Assuming you cloned and are inside the `i8080` folder with a terminal you should just
+```
+mkdir build && cd build
+cmake ..
+make
+./i8080
+```
+The i8080 emulator will then produce `i8080.log` which records the output of the cpu.
 
-* mkdir build/ && cd build
-* Compile a copy of the cpudiag.asm and dump in this folder
-* cmake ..
-* make
-* ./i8080
+## Unimplemented Opcodes
+Some opcodes are not implemented given I had no means to test them. As such I have implemented all opcodes except illegal opcodes and the following:
+* [0x20] - RIM
+* [0x30] - SIM
+* [0xD3] - OUTD
+* [0xDB] - IND
 
-It will then produce a debug.log file which shows the output of the cpu.
+## Testing
+As aformentioned The CPU has been tested against the [cpudiag](http://www.emulator101.com/files/cpudiag.asm) assembly program which for completeness is also included pre-assembled, with source and results. For those interested there is a bug in cpudiag discussed [here](http://www.emulator101.com/full-8080-emulation.html). Which is accounted for in the main function implementation...after many many painful hours.
 
-### Completed tasks
+Presently I've implemented a debug class that produces `i8080.log` file in the `i8080` directory. It records everything. For memory this includes read, write, addresses and values. For the CPU it includes instructions, register states and flags (in binary).
 
-* Implement cpu Class
-* Implement Ops 00 - 0f
-* Implement Ops 10 - 1f
-* Implement Ops 20 - 2f
-* Implement Ops 30 - 3f
-* Implement Ops 40 - 4f
-* Implement Ops 50 - 5f
-* Implement Ops 60 - 6f
-* Implement Ops 70 - 7f
-* Implement Ops 80 - 8f
-* Implement Ops 90 - 9f
-* Implement Ops a0 - af
-* Implement Ops b0 - bf
-* Implement Ops c0 - cf
-* Implement Ops d0 - df
-* Implement Ops e0 - ef
-* Implement Ops f0 - ff
-* Implement Debug Class
+To date the cpu completes all tests successfully. These are listed as:
+* [SUCCESS] TEST JUMP INSTRUCTIONS AND FLAGS
+* [SUCCESS] TEST ACCUMULATOR IMMEDIATE INSTRUCTIONS
+* [SUCCESS] TEST CALLS AND RETURNS
+* [SUCCESS] TEST "MOV","INR",AND "DCR" INSTRUCTIONS
+* [SUCCESS] TEST ARITHMETIC AND LOGIC INSTRUCTIONS
 
-### Test's Completed
-* TEST JUMP INSTRUCTIONS AND FLAGS
-* TEST ACCUMULATOR IMMEDIATE INSTRUCTIONS
-* TEST CALLS AND RETURNS
+## License
+Copyright (c) 2018 Christopher M. Short
 
-### Pending Tests
-* TEST "MOV","INR",AND "DCR" INSTRUCTIONS
-* TEST ARITHMETIC AND LOGIC INSTRUCTIONS
-
-### Known Bugs
-* The cpudiag test fails at STAXB. (I'm working on it!)
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

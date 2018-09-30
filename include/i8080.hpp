@@ -385,6 +385,8 @@ public:
   void Reset();
   void Debug(const bool& value, const char *path);
 
+  void SetMemory(const int& addr, const int& value) { MEMORY.set(addr, value); }
+
 };
 
 #endif // _I8080_HPP

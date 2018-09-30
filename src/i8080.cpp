@@ -439,20 +439,18 @@ int main(int argc, const char *argv[]) {
 
   // Read the relevant assembled source
   std::cout << "[i8080]\tReading Binary File" << std::endl;
-  cpu.Open("cpudiag.com");
+  cpu.Open("./test/cpudiag.com");
+
+  std::cout << "[i8080]\tFixing Cpudiag Stack Pointer to '0x07'" << std::endl;
+  cpu.SetMemory(0x1AD, 0x07);
 
   // Configure the Debug variables
   std::cout << "[i8080]\tConfiguring Debug Settings" << std::endl;
-  cpu.Debug(true, "debug.log");
-/*
-  if(argc > 1)
-    cpu.Debug(true, argv[2]);
-  else
-    cpu.Debug(false, "NONE");
-*/
+  cpu.Debug(true, "i8080.log");
+
   // Execute the the source
   std::cout << "[i8080]\tExecuting operations" << std::endl;
-  cpu.Run(5000);
+  cpu.Run(650);
 
   // Finalize and finish
   std::cout << "[i8080]\tExit Program" << std::endl << std::endl;
