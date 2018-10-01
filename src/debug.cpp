@@ -4,6 +4,16 @@ debug - debug.cpp
 
 Copyright (c) 2018 Christopher M. Short
 
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -15,6 +25,7 @@ DEALINGS IN THE SOFTWARE.
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include <i8080.hpp>
+
 
 // ------- i8080_DEBUG Implementation
 
@@ -58,7 +69,7 @@ void i8080_DEBUG::append(std::uint8_t opcode, std::uint8_t a, std::uint8_t b, st
 }
 
 
-void i8080_DEBUG::appendMemory(std::uint16_t addr, uint8_t value) {
+void i8080_DEBUG::appendMemoryR(std::uint16_t addr, uint8_t value) {
   if(illegal || !enabled)
     return;
 

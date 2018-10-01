@@ -4,6 +4,16 @@ debug - debug.hpp
 
 Copyright (c) 2018 Christopher M. Short
 
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -17,10 +27,11 @@ DEALINGS IN THE SOFTWARE.
 #ifndef _DEBUG_HPP
 #define _DEBUG_HPP
 
+
 // ------- Debug Constants
 
 // A static string table for CPU operations for convenience
-static const char *DEBUG_OPSTRING[256] {
+static const char * const DEBUG_OPSTRING[256] {
   "NOP", "LXIB", "STAXB", "INXB", "INRB", "DCRB", "MVIB", "RLC", "####", "DADB", "LDAXB", "DCXB", "INRC", "DCRC", "MVIC", "RRC",
   "####", "LXID", "STAXD", "INXD", "INRD", "DCRD", "MVID", "RAL", "####", "DADD", "LDAXD", "DCXD", "INRE", "DCRE", "MVIE", "RAR",
   "RIM", "LXIH", "SHLD", "INXH", "INRH", "DCRH", "MVIH", "DAA", "####", "DADH", "LHLD", "DCXH", "INRL", "DCRL", "MVIL", "CMA",
@@ -54,7 +65,7 @@ public:
 
   void start();
   void append(std::uint8_t opcode, std::uint8_t a, std::uint8_t b, std::uint8_t c, std::uint8_t d, std::uint8_t e, std::uint8_t h, std::uint8_t l, std::uint8_t flags, std::uint16_t pc, std::uint16_t sp);
-  void appendMemory(std::uint16_t addr, std::uint8_t value);
+  void appendMemoryR(std::uint16_t addr, std::uint8_t value);
   void appendMemoryW(std::uint16_t addr, std::uint8_t value);
   void stop();
 

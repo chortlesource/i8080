@@ -4,6 +4,16 @@ i8080 - i8080.hpp
 
 Copyright (c) 2018 Christopher M. Short
 
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -17,6 +27,7 @@ DEALINGS IN THE SOFTWARE.
 #ifndef _I8080_HPP
 #define _I8080_HPP
 
+
 // ------- Includes
 
 #include <cstdint>
@@ -28,8 +39,6 @@ DEALINGS IN THE SOFTWARE.
 #include <iomanip>
 #include <bitset>
 #include <array>
-
-#include <debug.hpp>
 
 // Local Includes
 #include <memory.hpp>
@@ -60,6 +69,7 @@ inline bool SET_AUX(bool value, std::uint8_t *flags) { return value ? (*flags |=
 inline bool SET_PARITY(bool value, std::uint8_t *flags) { return value ? (*flags |= FLAG_PARITY) : (*flags &= (~FLAG_PARITY)); }
 inline bool SET_CONST(bool value, std::uint8_t *flags) { return value ? (*flags |= FLAG_CONST) : (*flags &= (~FLAG_CONST)); }
 inline bool SET_CARRY(bool value, std::uint8_t *flags) { return value ? (*flags |= FLAG_CARRY) : (*flags &= (~FLAG_CARRY)); }
+
 
 // ------- i8080 Class
 
@@ -365,27 +375,25 @@ private:
   void opcode_rst7();   // 0xff
 
   // CPU Functions
-  bool getParity(std::uint16_t value);
-  void stack_push(std::uint16_t value);
-  std::uint16_t stack_pop();
-
-  void exec(OPCODE instr);
-
   std::uint8_t MEMORY_READ(std::uint16_t addr);
   void MEMORY_WRITE(std::uint16_t addr, std::uint8_t value);
+  void exec(OPCODE instr);
+
+  bool getParity(std::uint16_t value);
 
 public:
   // Constructor
   i8080();
 
   // User Functions
-  void Open(const char *path);
+  void Open(const char *path, const uint16_t& offset);
   void OpenIH(const char *path);
-  void Run(std::uint32_t num_cycles);
-  void Reset();
+
+  void Run(const std::uint32_t& num_cycles, const uint16_t& offset);
   void Debug(const bool& value, const char *path);
 
   void SetMemory(const int& addr, const int& value) { MEMORY.set(addr, value); }
+  void Reset();
 
 };
 

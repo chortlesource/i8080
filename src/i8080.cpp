@@ -4,6 +4,16 @@ i8080 - i8080.cpp
 
 Copyright (c) 2018 Christopher M. Short
 
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -18,37 +28,6 @@ DEALINGS IN THE SOFTWARE.
 
 // ------- i8080 Implementation
 
-bool i8080::getParity(std::uint16_t value) {
-  // Iterate through the bit to establish if it has an even or odd parity of 1's
-  std::uint8_t count = 0;
-  for(int i = 0; i < 16; i++) {
-    if(value & 0x01)
-      count++;
-    value >>= 1;
-  }
-
-  /*if(IS_CARRY(flags))
-    count++;
-    */
-  // Parity is the most significant bit of count; 0 for odd 1 for even parity.
-  return !(count & 0x01);
-}
-
-
-void i8080::stack_push(std::uint16_t value) {
-    sp -= 2;
-    MEMORY_WRITE(sp, value & 0x00FF);
-    MEMORY_WRITE(sp + 1, (value & 0xFF00) >> 8);
-}
-
-
-std::uint16_t i8080::stack_pop() {
-    std::uint16_t value = (MEMORY_READ(sp + 1) << 8) | MEMORY_READ(sp);
-    sp += 2;
-    return value;
-}
-
-
 void i8080::exec(OPCODE instr) {
   // Execute the relevant opcode function
   (this->*instr)();
@@ -56,24 +35,38 @@ void i8080::exec(OPCODE instr) {
 
 
 std::uint8_t i8080::MEMORY_READ(std::uint16_t addr) {
-  // Read memory address 'addr'
-  DEBUG.appendMemory(addr, MEMORY.READ(addr));
+  // Read memory address 'addr' and append debug information to log
+  DEBUG.appendMemoryR(addr, MEMORY.READ(addr));
   return MEMORY.READ(addr);
 }
 
 
 void i8080::MEMORY_WRITE(std::uint16_t addr, std::uint8_t value) {
-  // Store 'value' in memory address 'addr'
+  // Store 'value' in memory address 'addr' and append debug information to log
   DEBUG.appendMemoryW(addr, value);
   MEMORY.WRITE(addr, value);
 }
 
 
+bool i8080::getParity(std::uint16_t value) {
+  // Iterate through the bit to establish if it has an even or odd parity of 1's
+  std::uint8_t count = 0;
+  for(int i = 0; i < 16; i++) {
+    if(value & 0x01)
+      // Count the number of 1's
+      count++;
+    value >>= 1;
+  }
+
+  // Parity is the most significant bit of our count; 0 for odd 1 for even parity.
+  return !(count & 0x01);
+}
+
+
 i8080::i8080() {
-  // Provisionally fill all instructions with nones
+  // Provisionally fill all our instructions with nones
   OPCODE instr = &i8080::opcode_none;
-  for(unsigned int i = 0; i < 0xFF; i++)
-    instrtable[i] = instr;
+  instrtable.fill(instr);
 
   // Manually populate the function table
   instrtable[0x00] = &i8080::opcode_nop;    // 0x00
@@ -338,17 +331,19 @@ i8080::i8080() {
   instrtable[0xfe] = &i8080::opcode_cpid;   // 0xfe
   instrtable[0xff] = &i8080::opcode_rst7;   // 0xff
 
+  // Reset the CPU to initialize cpu state
   Reset();
 
   return;
 }
 
 
-void i8080::Open(const char *path) {
+void i8080::Open(const char *path, const uint16_t& offset) {
   if(!initialized || halt)
     return;
 
-  MEMORY.loadFile(path);
+  // Load the file specified in path to memory offset
+  MEMORY.loadFile(path, offset);
 }
 
 
@@ -356,19 +351,22 @@ void i8080::OpenIH(const char *path) {
   if(!initialized || halt)
     return;
 
+    // Load the hex file specified in path to memory offset
   MEMORY.loadHexFile(path);
 }
 
 
-void i8080::Run(std::uint32_t num_cycles) {
+void i8080::Run(const std::uint32_t& num_cycles, const uint16_t& offset) {
   if(!initialized || halt)
     return;
 
+  // Declare our opcode variables and initialize our cycle counter
   std::uint32_t cycles_start = cycles;
   std::uint8_t opcode;
   OPCODE instr;
 
-  pc = 0x100;
+  // Initialize the program counter to the start of the program
+  pc = offset;
 
   // Start our debugging session
   if(DEBUG.isEnabled())
@@ -376,21 +374,32 @@ void i8080::Run(std::uint32_t num_cycles) {
 
   while(cycles_start + num_cycles > cycles && !none_opcode && !halt) {
 
-    opcode = MEMORY_READ(pc++);   // Fetch
-    instr = instrtable[opcode];   // Decode
+    opcode = MEMORY_READ(pc++);   // Fetch the next opcode and incr program counter
+    instr = instrtable[opcode];   // Decode the instruction
 
-    // Append to our file the CPU status
+    // Append the CPU status to log
     if(DEBUG.isEnabled())
       DEBUG.append(opcode, a, b, c, d, e, h, l, flags, pc, sp);
 
-    exec(instr);                  // Execute
+    exec(instr);                  // Execute the instruction
 
-    cycles++;
+    cycles++;                     // Increment a cycle
+                                  // TODO: Implment accurate cycle count
   }
 
-  // End debugging session
+  // End debugging session and close our log file
   if(DEBUG.isEnabled())
     DEBUG.stop();
+}
+
+
+void i8080::Debug(const bool& value, const char *path) {
+  if(!initialized)
+    return;
+
+  // Initialize and enable the debug class
+  DEBUG.initialize(path);
+  DEBUG.setEnabled(value);
 }
 
 
@@ -422,13 +431,6 @@ void i8080::Reset() {
   initialized = true;
 }
 
-void i8080::Debug(const bool& value, const char *path) {
-  if(!initialized)
-    return;
-
-  DEBUG.initialize(path);
-  DEBUG.setEnabled(value);
-}
 
 // ------- Main Function Implementation
 
@@ -439,20 +441,21 @@ int main(int argc, const char *argv[]) {
 
   // Read the relevant assembled source
   std::cout << "[i8080]\tReading Binary File" << std::endl;
-  cpu.Open("./test/cpudiag.com");
+  cpu.Open("./test/cpudiag.com", 0x100);
 
   std::cout << "[i8080]\tFixing Cpudiag Stack Pointer to '0x07'" << std::endl;
   cpu.SetMemory(0x1AD, 0x07);
 
   // Configure the Debug variables
   std::cout << "[i8080]\tConfiguring Debug Settings" << std::endl;
-  cpu.Debug(true, "i8080.log");
+  cpu.Debug(true, "i8080_com.log");
 
   // Execute the the source
   std::cout << "[i8080]\tExecuting operations" << std::endl;
-  cpu.Run(650);
+  cpu.Run(650, 0x100);
 
   // Finalize and finish
   std::cout << "[i8080]\tExit Program" << std::endl << std::endl;
+  cpu.Reset();
   return 0;
 }

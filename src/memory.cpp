@@ -4,6 +4,16 @@ memory - memory.cpp
 
 Copyright (c) 2018 Christopher M. Short
 
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included
+in all copies or substantial portions of the Software.
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
 OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
@@ -15,6 +25,7 @@ DEALINGS IN THE SOFTWARE.
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #include <i8080.hpp>
+
 
 // ------- MEMORY Implementation
 
@@ -29,9 +40,9 @@ unsigned int i8080_MEMORY::hextoint(std::string line) {
     if(isdigit(ch))
       value = ch - '0'; // Subtract ascii 48 to obtain numerical value from ascii char
     else if(isxdigit(ch))
-      value = ch - 'a' + 10; // Do some magic ?
+      value = ch - 'a' + 10;
 
-    rvalue = rvalue * 16 + value; // WTF does this do?
+    rvalue = rvalue * 16 + value;
 
   }
   return rvalue;
@@ -108,18 +119,21 @@ bool i8080_MEMORY::loadLine(std::string line) {
 
 
 void i8080_MEMORY::WRITE(uint16_t addr, uint8_t data) {
+  // Write the data to memory
   MEMORY[addr] = data;
 }
 
 
 uint8_t i8080_MEMORY::READ(uint16_t addr) {
+  // Read the data from memory
   return MEMORY[addr];
 }
 
 
-void i8080_MEMORY::loadFile(const char *path) {
+void i8080_MEMORY::loadFile(const char *path, const uint16_t& offset) {
   std::ifstream input(path, std::ios::binary);
   if(input) {
+    // Clarify how large the file is
     input.seekg (0, input.end);
     auto fsize = input.tellg();
     input.seekg (0, input.beg);
@@ -128,7 +142,8 @@ void i8080_MEMORY::loadFile(const char *path) {
     input.read(buffer, fsize);
 
     for (unsigned int i = 0; i < fsize; i++) {
-      MEMORY[0x100 + i] = static_cast<uint8_t>(buffer[i]);
+      // Load our binary into memory at offset specified
+      MEMORY[offset + i] = static_cast<uint8_t>(buffer[i]);
     }
     delete [] buffer;
   }
@@ -158,5 +173,6 @@ void i8080_MEMORY::loadHexFile(const char *path) {
 
 
 void i8080_MEMORY::reset() {
+  // Reset our memory by filling with 0's
   MEMORY.fill(0);
 }
